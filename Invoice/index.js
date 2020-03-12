@@ -6,13 +6,14 @@ const request = require('request')
 const admin = require('firebase-admin')
 const multer = require('multer')
 const fs = require('fs')
+const path = require('path')
 
 app.use(bodyparser.urlencoded({extended: false}))
 app.use(bodyparser.json())
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './Invoice/tmp')
+        cb(null, './tmp')
     },
     filename: (req, file, cb) => {
         console.log(file)
@@ -39,26 +40,34 @@ const Invoice = sequelize.define(
     'invoice', 
     {
         // attributes
-        invoiceId: {
-            type: Sequelize.STRING,
-            // allowNull: false,
+        INVOICEID: {
+            type: Sequelize.INTEGER,
+            allowNull: true,
             primaryKey: true,
             autoIncrement: true,
-            },
-        dateTime: {
+        },
+        INVOICEDATETIME: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW,
             allowNull: false,
         },
-        description: {
+        DESCRIPTION: {
             type: Sequelize.STRING,
             allowNull: true,
         },
-        title: {
+        TITLE: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        amount: {
+        PHOTOLINK: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        GROUPID: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        AMOUNT: {
             type: Sequelize.FLOAT,
             allowNull: false,
         },
@@ -69,7 +78,7 @@ const Invoice = sequelize.define(
 );
 
 const UserInvoices = sequelize.define(
-    'user_invoice', 
+    'invoice', 
     {
         // attributes
         userId: {
@@ -87,42 +96,59 @@ const UserInvoices = sequelize.define(
             allowNull: false,
         }
     }, {
-        tableName: 'user_group',
+        tableName: 'userinvoice',
         timestamps: false
     }
 );
 
-app.post("/invoice", uploadDisk.single("file"), (req, res) => {
-    // Invoice.create(req.body).then(result => {
-    //     res.json(result)
-    // })
-    // const img = req.body.file
-    ;
-    bucket.upload('./Invoice/tmp/' + req.file.filename).then(
-        (ffres) => {
-            console.log("successful")
-            res.send(ffres)
-        }, 
-        (rej) => {
-            console.log("rejected")
-            res.send(rej)
+app.post("/invoice", uploadDisk.single("FILE"), (req, res) => {
+    Invoice.create(req.body).then(result => {
+        console.log(result)
+        if(result.INVOICEID) {
+
+            var toRes
+            const newName = result.INVOICEID + path.extname(req.file.filename)
+
+            fs.rename('./tmp/' + req.file.filename,
+                './tmp/'+newName,
+                () => {
+                    bucket.upload('./tmp/' + newName).then(
+                        (ffres) => {
+                            console.log("successful")
+                            Invoice.update(
+                                {PHOTOLINK: newName},
+                                {where: {INVOICEID: result.INVOICEID}}
+                            )
+                            result.PHOTOLINK = newName
+                            toRes = result
+                        }, 
+                        (rej) => {
+                            console.log("rejected")
+                            toRes = rej
+                        }
+                    ).catch((err) => {
+                        confirm.log("error")
+                        toRes = err
+                    }).finally(() => {
+                        fs.unlink('./tmp/' + newName, () => {
+                            console.log('file unlinked')
+                            res.json(toRes)
+                        })
+                        
+                    })
+                }
+            )
         }
-    ).catch((err) => {
-        confirm.log("error")
-        res.send("Error: " + err)
-    }).finally(() => {
-        fs.unlink('./Invoice/tmp/'+req.file.filename, () => {
-            console.log('file unlinked')
-        })
+                
     })
-    
+        
 })
 
 app.get("/invoice/:id", (req, res) => {
     
     const iid = req.params.id
 
-    Invoice.findOne(iid).then((invoice) => {
+    Invoice.findByPk(iid).then((invoice) => {
         if(invoice)
             return res.send(invoice)
         else
@@ -135,10 +161,12 @@ app.get("/invoice/group/:id", (req, res) => {
     const gid = req.params.id
 
     Invoice.findAll({
-        groupId: gid
+        where: {
+            GROUPID: gid
+        }
     }).then((invoices) => {
         return res.send(invoices)        
     })
 })
 
-app.listen(3000, () =>  console.log('Express server is running at port no: 3000'));
+app.listen(3004, () =>  console.log('Express server is running at port no: 3004'));

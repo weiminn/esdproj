@@ -4,64 +4,29 @@ const bodyparser = require('body-parser')
 const Sequelize = require('sequelize')
 const request = require('request')
 
-const sequelize = new Sequelize('book', 'root', '', {
+const sequelize = new Sequelize('usergrpouting', 'root', '', {
     host: 'localhost',
     dialect: 'mysql'
   })
 
-  const UserGroup = sequelize.define('book', {
+  const UserGroup = sequelize.define('usergrpouting', {
       // attributes
-      userId: {
+      USERID: {
           type: Sequelize.STRING,
           allowNull: false,
           primaryKey: true
           },
-      groupId: {
-          type: Sequelize.STRING,
+      GROUPID: {
+          type: Sequelize.INTEGER,
           allowNull: false,
           primaryKey: true
       },
       }, {
-          tableName: 'user_group',
+          tableName: 'usergrpouting',
           timestamps: false
       }
   );
 
-  const User = sequelize.define('book', {
-      // attributes
-      userId: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          primaryKey: true
-          },
-      groupId: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          primaryKey: true
-      },
-      }, {
-          tableName: 'user',
-          timestamps: false
-      }
-  );
-
-  const Group = sequelize.define('book', {
-      // attributes
-      userId: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          primaryKey: true
-          },
-      groupId: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          primaryKey: true
-      },
-      }, {
-          tableName: 'group',
-          timestamps: false
-      }
-  );
 
 app.post("/usergroup", (req, res) => {
     UserGroup.create(req.body).then(result => {
@@ -74,15 +39,22 @@ app.get("/usergroup/group/:id", (req, res) => {
     const gid = req.params.id
 
     UserGroup.findAll({
-        groupId: gid
+        where: {
+            GROUPID: gid
+        }
     }).then((groupUsers) => {
+        console.log(groupUsers)
+
         var users = [];
 
         usersProcessed = 0;
 
         groupUsers.forEach(user => {
-            request('http://dummy.restapiexample.com/api/v1/employees', { json: true }, (err, response, u) => {
-                if (err) { return console.log(err); }
+            request('http://localhost:3001/user/' + user.USERID, { json: true }, (err, response, u) => {
+                if (err) { 
+                    return res.send(err); 
+                }
+                
                 users.push(u)
                 usersProcessed++
 
@@ -99,15 +71,23 @@ app.get("/usergroup/user/:id", (req, res) => {
     const uid = req.params.id
 
     UserGroup.findAll({
-        userId: req.params.id
+        where: {
+            USERID: req.params.id
+        }
     }).then((userGroups) => {
+
+        console.log(userGroups)
+
         var groups = [];
 
         groupsProcessed = 0;
 
-        userGroups.forEach(user => {
-            request('http://dummy.restapiexample.com/api/v1/employees', { json: true }, (err, response, g) => {
-                if (err) { return console.log(err); }
+        userGroups.forEach(group => {
+            request('http://localhost:3002/grpouting/' + group.GROUPID, { json: true }, (err, response, g) => {
+                if (err) { 
+                    return res.send(err); 
+                }
+
                 groups.push(g)
                 groupsProcessed++
 
@@ -120,4 +100,4 @@ app.get("/usergroup/user/:id", (req, res) => {
     })
 })
 
-app.listen(3000, () =>  console.log('Express server is running at port no: 3000'));
+app.listen(3003, () =>  console.log('Express server is running at port no: 3003'));
