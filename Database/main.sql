@@ -5,13 +5,14 @@ use User;
 CREATE TABLE User
 ( USERID VARCHAR(100) NOT NULL,
   USERNAME VARCHAR(100) NOT NULL,
+  EMAIL VARCHAR(100) NOT NULL,
   PWD VARCHAR(100) NOT NULL,
   CONSTRAINT USER_PK PRIMARY KEY (USERID) );
   
-INSERT INTO User VALUES("123abc", "Hardyanto", "Hardy123");
-INSERT INTO User VALUES("456abc", "HongRen", "HongRen123");
-INSERT INTO User VALUES("789abc", "Ram", "Ram123");
-INSERT INTO User VALUES("123ccc", "Amanda", "Amanda123");
+INSERT INTO User VALUES("123abc", "Hardyanto", "wei.minn.2018@sis.smu.edu.sg", "Hardy123");
+INSERT INTO User VALUES("456abc", "HongRen", "wei.minn.2018@sis.smu.edu.sg", "HongRen123");
+INSERT INTO User VALUES("789abc", "Ram", "wei.minn.2018@sis.smu.edu.sg", "Ram123");
+INSERT INTO User VALUES("123ccc", "Amanda", "wei.minn.2018@sis.smu.edu.sg", "Amanda123");
 
 DROP DATABASE IF EXISTS GrpOuting;
 CREATE DATABASE GrpOuting;

@@ -20,15 +20,17 @@ class User(db.Model):
 
 	userID = db.Column(db.String(100), primary_key=True)
 	userName = db.Column(db.String(100), nullable=False)
+	email = db.Column(db.String(100), nullable=False)
 	pwd = db.Column(db.String(100), nullable=False)
 
-	def __init__(self, userID, userName, pwd):
+	def __init__(self, userID, userName, email, pwd):
 		self.userID = userID
 		self.userName = userName
+		self.email = email
 		self.pwd = pwd
 
 	def json(self):
-		return {"USERID": self.userID, "USERNAME": self.userName, "PWD": self.pwd}
+		return {"USERID": self.userID, "USERNAME": self.userName, "EMAIL": self.email, "PWD": self.pwd}
 
 
 @app.route("/user") #Use Flask's app.route decorator to map the URL route /users to the function get_all. 
