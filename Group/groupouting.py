@@ -1,19 +1,22 @@
 from flask import Flask, request, jsonify
 
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+# from os import environ
 
 app = Flask(__name__) #Import Flask and initialize a Flask application.
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/grpouting'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/grpouting'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:asdf1234@testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com:3306/GrpOuting'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 CORS(app)
+# CORS(app, resources={r"/*": {"origins": "*"}})
 
 class Group(db.Model):
-	__tablename__ = 'grpouting' #declare database and variables mirroring actual one
+	__tablename__ = 'GrpOuting' #declare database and variables mirroring actual one
 
 	grpOutingID = db.Column(db.Integer(), primary_key=True)
 	createdBy = db.Column(db.String(100), nullable=False)
@@ -38,6 +41,7 @@ def find_by_grpOutingID(grpOutingID):
 
 
 @app.route("/grpouting", methods=['POST'])#/<string:grpOutingID>
+# @cross_origin()
 def create_group():#grpOutingID
 	# if (Group.query.filter_by(grpOutingID=grpOutingID).first()):
 	# 	return jsonify({"message": "Group Outing ID: '{}' already exists.".format(grpOutingID)}), 400
@@ -57,5 +61,5 @@ def create_group():#grpOutingID
 	return jsonify(group.json()), 201
 
 if __name__ == '__main__': #start application as a flask app
-	app.run(port=3002, debug=True) #port = 5000: allow u to set a diff port for diff services
+	app.run(host='0.0.0.0', port=3002, debug=True) #port = 5000: allow u to set a diff port for diff services
 	#debug =TRUE = print out error

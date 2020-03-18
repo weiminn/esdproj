@@ -3,44 +3,96 @@ var app = express();
 const bodyparser = require('body-parser')
 const Sequelize = require('sequelize')
 const request = require('request')
+const axios = require('axios')
+const cjson = require('circular-json')
 
-const sequelize = new Sequelize('usergrpouting', 'root', '', {
-    host: 'localhost',
+// parse application/x-www-form-urlencoded
+app.use(bodyparser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyparser.json())
+
+const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
+    // host: process.env.dbHOST,//'localhost',
+    host: "testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
-  })
+})
 
-  const UserGroup = sequelize.define('usergrpouting', {
-      // attributes
-      USERID: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          primaryKey: true
-          },
-      GROUPID: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          primaryKey: true
-      },
-      }, {
-          tableName: 'usergrpouting',
-          timestamps: false
-      }
-  );
+console.log(process.env.dbHOST)
+
+const UserGrpOuting = sequelize.define('UserGrpOuting', {
+    
+    // attributes
+    USERID: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        primaryKey: true
+    },
+    GRPOUTINGID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        primaryKey: true
+    },
+    }, {
+        tableName: 'UserGrpOuting',
+        timestamps: false
+    }
+);
 
 
-app.post("/usergroup", (req, res) => {
-    UserGroup.create(req.body).then(result => {
+app.post("/UserGrpOuting/create", (req, res) => {
+
+    axios.post('http://localhost:3002/grpouting', {
+        "CreatedBy": req.body.CreatedBy
+    })
+    .then((response) => {
+        // console.log(`statusCode: ${response.statusCode}`)
+        console.log(response.data)
+        UserGrpOuting.create(
+            {
+                "USERID": "123abc",
+                "GROUPOUTINGID": 4
+            }
+        )
+        // res.send(response.data)
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+
+
+    // request('http://localhost:3002/grpouting', {
+    //     data: {
+    //         "createdBy": req.body.CreatedBy
+    //     }
+        
+    //   },
+    // (err, response, body) => {
+    //     if (err) { 
+    //         return res.send(err); 
+    //     }
+    //     // console.log(response)
+    //     res.send(response)
+    //     // UserGrpOuting.create(req.body).then(result => {
+    //     //     res.json(result)
+    //     // })
+    // });
+    
+})
+
+app.post("/UserGrpOuting/join", (req, res) => {
+    UserGrpOuting.create(req.body).then(result => {
         res.json(result)
     })
 })
 
-app.get("/usergroup/group/:id", (req, res) => {
+app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
     
     const gid = req.params.id
 
-    UserGroup.findAll({
+    UserGrpOuting.findAll({
         where: {
-            GROUPID: gid
+            GRPOUTINGID: gid
         }
     }).then((groupUsers) => {
         console.log(groupUsers)
@@ -66,24 +118,26 @@ app.get("/usergroup/group/:id", (req, res) => {
     })
 })
 
-app.get("/usergroup/user/:id", (req, res) => {
+app.get("/UserGrpOuting/user/:id", (req, res) => {
     
     const uid = req.params.id
 
-    UserGroup.findAll({
+    UserGrpOuting.findAll({
         where: {
             USERID: req.params.id
         }
-    }).then((userGroups) => {
+    }).then((UserGrpOutings) => {
 
-        console.log(userGroups)
+        // console.log(UserGrpOutings)
 
         var groups = [];
 
         groupsProcessed = 0;
 
-        userGroups.forEach(group => {
-            request('http://localhost:3002/grpouting/' + group.GROUPID, { json: true }, (err, response, g) => {
+        UserGrpOutings.forEach(group => {
+
+            console.log(group.GRPOUTINGID)
+            request('http://localhost:3002/grpouting/' + group.GRPOUTINGID, { json: true }, (err, response, g) => {
                 if (err) { 
                     return res.send(err); 
                 }
@@ -91,7 +145,7 @@ app.get("/usergroup/user/:id", (req, res) => {
                 groups.push(g)
                 groupsProcessed++
 
-                if(groupsProcessed == userGroups.length) {
+                if(groupsProcessed == UserGrpOutings.length) {
                     return res.send(groups)
                 }
             });

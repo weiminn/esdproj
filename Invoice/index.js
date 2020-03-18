@@ -31,13 +31,14 @@ admin.initializeApp({
 
 var bucket = admin.storage().bucket();
 
-const sequelize = new Sequelize('invoice', 'root', '', {
-    host: 'localhost',
+const sequelize = new Sequelize('Invoice', 'admin', 'asdf1234', {
+    // host: process.env.dbHOST,//'localhost',
+    host: "testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
 
 const Invoice = sequelize.define(
-    'invoice', 
+    'Invoice', 
     {
         // attributes
         INVOICEID: {
@@ -63,7 +64,7 @@ const Invoice = sequelize.define(
             type: Sequelize.STRING,
             allowNull: false,
         },
-        GROUPID: {
+        GRPOUTINGID: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
@@ -72,39 +73,54 @@ const Invoice = sequelize.define(
             allowNull: false,
         },
     }, {
-        tableName: 'invoice',
+        tableName: 'Invoice',
         timestamps: false
     }
 );
 
-const UserInvoices = sequelize.define(
-    'invoice', 
+const UserInvoice = sequelize.define(
+    'UserInvoice', 
     {
         // attributes
-        userId: {
+        USERID: {
             type: Sequelize.STRING,
             allowNull: false,
             primaryKey: true,
         },
-        invoiceId: {
+        INVOICEID: {
             type: Sequelize.STRING,
             allowNull: false,
             primaryKey: true
         },
-        owner: {
+        OWNER: {
             type: Sequelize.BOOLEAN,
             allowNull: false,
         }
     }, {
-        tableName: 'userinvoice',
+        tableName: 'UserInvoice',
         timestamps: false
     }
 );
 
 app.post("/invoice", uploadDisk.single("FILE"), (req, res) => {
+    // console.log(req.body)
     Invoice.create(req.body).then(result => {
-        console.log(result)
+        
+        // console.log(req.body)
+        // console.log(result)
         if(result.INVOICEID) {
+
+            console.log(req.body.USERS)
+            var users = req.body.USERS
+
+            // return true
+            users.forEach(user => {
+                UserInvoice.create({
+                    USERID: user.USERID,
+                    INVOICEID: result.INVOICEID,
+                    OWNER: user.OWNER == 'true'
+                })
+            });
 
             var toRes
             const newName = result.INVOICEID + path.extname(req.file.filename)
@@ -138,10 +154,8 @@ app.post("/invoice", uploadDisk.single("FILE"), (req, res) => {
                     })
                 }
             )
-        }
-                
-    })
-        
+        }       
+    })   
 })
 
 app.get("/invoice/:id", (req, res) => {
@@ -156,17 +170,54 @@ app.get("/invoice/:id", (req, res) => {
     })
 })
 
-app.get("/invoice/group/:id", (req, res) => {
+app.get("/invoice/grpouting/:id", (req, res) => {
     
     const gid = req.params.id
 
     Invoice.findAll({
         where: {
-            GROUPID: gid
+            GRPOUTINGID: gid
         }
     }).then((invoices) => {
         return res.send(invoices)        
     })
 })
+
+app.get("/invoice/grpouting/:gid/user/:uid", (req, res) => {
+    
+    const gid = req.params.gid
+    const uid = req.params.uid
+
+    var invoices = []
+
+    UserInvoice.findAll({
+        where: {
+            USERID: uid
+        }
+    }).then((userInvoices) => {
+        console.log("found: " + userInvoices.length)
+        userInvoices.forEach(userInvoice => {
+            Invoice.findByPk(userInvoice.INVOICEID).then((invoice) => {
+                invoices.push(invoice)
+                console.log(invoices)
+                if(invoices.length == userInvoices.length) {
+                    const toReturn = invoices.filter(inv => inv.GRPOUTINGID == gid)
+                    console.log(invoices.length + ": " + toReturn.length)
+                    return res.send(toReturn)
+                }
+            })
+        })        
+    })
+})
+
+// app.post("/invoice/:iid/user", (req, res) => {
+//     UserInvoices.create(req.body).then(result => {
+//         console.log(result)
+//         if(result.INVOICEID) {
+
+            
+//         }                
+//     })      
+// })
 
 app.listen(3004, () =>  console.log('Express server is running at port no: 3004'));

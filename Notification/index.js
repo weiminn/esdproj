@@ -7,10 +7,10 @@ const nodemailer = require('nodemailer')
 
 var amqp = require('amqplib/callback_api')
 
-const sequelize = new Sequelize('book', 'root', '', {
-    host: 'localhost',
-    dialect: 'mysql'
-})
+// const sequelize = new Sequelize('book', 'root', '', {
+//     host: 'localhost',
+//     dialect: 'mysql'
+// })
 
 let transport = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -21,24 +21,23 @@ let transport = nodemailer.createTransport({
     }
 });
 
-var mail = () => {
+const mail = (toEmail, subject, cont) => {
 
     transport.sendMail({
         from: 'ee.ass.deez@gmail.com',
-        to: 'wei.minn.2018@sis.smu.edu.sg',
+        to: toEmail,
         // to : 'baratharamm@sis.smu.edu.sg',
-        subject: 'ESD Notfication API Test',
-        text: 'suck ma deek'
+        subject: subject,
+        text: cont
     }, (err, info) => {
         if(err) {console.log(err)}
         else {console.log("email sent")}
     })
 }
-// mail()
 
 amqp.connect('amqp://localhost', (err, conn) => {
     conn.createChannel((err, channel) => {
-        channel.assertExchange("node_amqp", 'direct', {durable: false}, 
+        channel.assertExchange("node_amqp", 'direct', {durable: true}, 
             (err, ok) => {
                 channel.assertQueue("test_queue", {durable: true},
                     (err, aQ) => {
@@ -51,8 +50,22 @@ amqp.connect('amqp://localhost', (err, conn) => {
                                 channel.consume(
                                     "test_queue", 
                                     (msg) => {
-                                        console.log(msg.content.toString())
-                                    },  
+                                        msg = JSON.parse(msg.content)
+
+                                        request.get('http://localhost:3001/user/' + msg.UserID, { json: true }, (err, uresponse) => {
+                                            console.log(uresponse.body)
+                                            const email = "baratharamm.2018@smu.edu.sg"
+                                            request.get('http://localhost:3004/invoice/' + msg.InvoiceID, { json: true }, (err, iresponse) => {
+                                                console.log(iresponse.body)
+                                                const username = uresponse.body.USERNAME
+                                                const invoiceName = iresponse.body.TITLE
+                                                const invoiceTransaction = msg.TransactionID
+                                                
+                                                mail(email, "Invoice Settled", "Dear " + username + ", \n\nThe invoice for " + invoiceName + " has been settled via Transaction: " + invoiceTransaction)
+                                                
+                                            })
+                                        })
+                                    },
                                     {
                                         noAck: true
                                     }

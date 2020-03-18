@@ -6,10 +6,17 @@ const request = require('request')
 const nodemailer = require('nodemailer')
 const amqp = require('amqplib/callback_api');
 
-const sequelize = new Sequelize('settlement', 'root', '', {
-    host: 'localhost',
+const sequelize = new Sequelize('settlement', 'admin', 'asdf1234', {
+    // host: process.env.dbHOST,//'localhost',
+    host: "testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
+
+// parse application/x-www-form-urlencoded
+app.use(bodyparser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyparser.json())
 
 const Settlement = sequelize.define('settlement', 
     {
@@ -19,17 +26,18 @@ const Settlement = sequelize.define('settlement',
             allowNull: false,
             primaryKey: true,
         },
-        Invoice: {
+        InvoiceID: {
             type: Sequelize.INTEGER,
             allowNull: false,
             primaryKey: true
         },
-        TransactionId: {
+        TransactionID: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         SettlementDateTime: {
             type: Sequelize.DATE,
+            defaultValue: Sequelize.NOW,
             allowNull: false,
         }
     }, 
@@ -40,7 +48,9 @@ const Settlement = sequelize.define('settlement',
 );
 
 app.post("/settlement", (req, res) => {
-    Sett.create(req.body).then(result => {
+    console.log(req.body)
+    Settlement.create(req.body).then(result => {
+        console.log(result)
         res.json(result)
 
         amqp.connect('amqp://localhost', (err, conn) => {
@@ -56,14 +66,20 @@ app.post("/settlement", (req, res) => {
                                     "test_key",
                                     null, 
                                     (err, ok) => {
+
+                                        const msg = {
+                                            UserID: req.body.UserID,
+                                            InvoiceID: req.body.InvoiceID,
+                                            TransactionID: req.body.TransactionID
+                                        }
+
                                         ch.publish(
                                             "node_amqp", 
                                             "test_key", 
-                                            new Buffer("Test buffered content")
+                                            new Buffer(JSON.stringify(msg))
                                         )
                                     }
                                 )
-                                
                             }
                         )                
                     }
@@ -71,15 +87,19 @@ app.post("/settlement", (req, res) => {
             });
         })
     })
-    
-
 })
 
-app.get("/settlement/:id", (req, res) => {
+app.get("/settlement/user/:uid/invoice/:iid", (req, res) => {
 
-    const iid = req.params.id
+    const uid = req.params.uid
+    const iid = req.params.iid
 
-    Invoice.findOne(iid).then((invoice) => {
+    Settlement.findAll({
+        where: {
+            UserID: uid,
+            InvoiceId: iid
+        }
+    }).then((invoice) => {
         if(invoice)
             return res.send(invoice)
         else
@@ -87,4 +107,4 @@ app.get("/settlement/:id", (req, res) => {
     })
 })
 
-app.listen(3000, () =>  console.log('Express server is running at port no: 3000'));
+app.listen(3005, () =>  console.log('Express server is running at port no: 3005'));
