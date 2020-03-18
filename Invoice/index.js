@@ -170,6 +170,33 @@ app.get("/invoice/:id", (req, res) => {
     })
 })
 
+app.get("/invoice/:id/owner", (req, res) => {
+    
+    const iid = req.params.id
+
+    Invoice.findByPk(iid).then((invoice) => {
+        if(invoice){
+            UserInvoice.findAll(
+                {
+                    where: {
+                        INVOICEID: iid,
+                        OWNER: true
+                    }
+                }
+            ).then((userInvoice) => {
+                console.log(userInvoice[0].USERID)
+                request('http://localhost:3001/user/' + userInvoice[0].USERID, { json: true }, (e,r,b) => {
+                    if (e)
+                        return res.send(e)
+                    return res.send(b)
+                })
+            })
+        } 
+        else
+            {return res.send("Invoice not found!")}
+    })
+})
+
 app.get("/invoice/grpouting/:id", (req, res) => {
     
     const gid = req.params.id

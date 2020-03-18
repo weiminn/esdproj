@@ -35,7 +35,7 @@ const mail = (toEmail, subject, cont) => {
     })
 }
 
-amqp.connect('amqp://localhost', (err, conn) => {
+amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudamqp.com/salczyxm', (err, conn) => {
     conn.createChannel((err, channel) => {
         channel.assertExchange("node_amqp", 'direct', {durable: true}, 
             (err, ok) => {
@@ -54,14 +54,26 @@ amqp.connect('amqp://localhost', (err, conn) => {
 
                                         request.get('http://localhost:3001/user/' + msg.UserID, { json: true }, (err, uresponse) => {
                                             console.log(uresponse.body)
-                                            const email = "baratharamm.2018@smu.edu.sg"
+                                            const email = uresponse.body.EMAIL
                                             request.get('http://localhost:3004/invoice/' + msg.InvoiceID, { json: true }, (err, iresponse) => {
                                                 console.log(iresponse.body)
                                                 const username = uresponse.body.USERNAME
                                                 const invoiceName = iresponse.body.TITLE
                                                 const invoiceTransaction = msg.TransactionID
                                                 
-                                                mail(email, "Invoice Settled", "Dear " + username + ", \n\nThe invoice for " + invoiceName + " has been settled via Transaction: " + invoiceTransaction)
+                                                mail(email, "Invoice Paid For", "Dear " + username + 
+                                                ", \n\nYou have paid for '" + invoiceName + "' via Transaction: " + invoiceTransaction)
+
+                                                request.get('http://localhost:3004/invoice/' + iresponse.body.INVOICEID + '/owner' , { json: true }, (err, oresponse, ob) => {
+                                                    console.log(ob)
+                                                    const ownername = oresponse.body.USERNAME
+                                                    const oemail = oresponse.body.EMAIL
+
+                                                    mail(oemail, "Your Invoice Settled", 
+                                                    "Dear " + ownername + 
+                                                    ", \n\nYour invoice, '" + invoiceName + "', has been settled by " + username + " via Transaction: " + invoiceTransaction)
+
+                                                })
                                                 
                                             })
                                         })
