@@ -22,7 +22,7 @@ class Group(db.Model):
 	createdBy = db.Column(db.String(100), nullable=False)
 
 	def json(self):
-		return {"GrpOutingID": self.grpOutingID, "CreatedBy ": self.createdBy}
+		return {"GrpOutingID": self.grpOutingID, "CreatedBy": self.createdBy}
 
 
 # @app.route("/grpouting") #Use Flask's app.route decorator to map the URL route /groups to the function get_all. 
