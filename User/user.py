@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__) #Import Flask and initialize a Flask application.
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:asdf1234@testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com:3306/User'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:asdf1234@esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com:3306/User'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 # print(environ.get('dbURL'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -30,7 +30,7 @@ class User(db.Model):
 		self.pwd = pwd
 
 	def json(self):
-		return {"USERID": self.userID, "USERNAME": self.userName, "EMAIL": self.email, "PWD": self.pwd}
+		return {"UserID": self.userID, "Username": self.userName, "Email": self.email, "Pwd": self.pwd}
 
 
 @app.route("/user") #Use Flask's app.route decorator to map the URL route /users to the function get_all. 

@@ -14,21 +14,22 @@ app.use(bodyparser.json())
 
 const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
     // host: process.env.dbHOST,//'localhost',
-    host: "testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
+    host: "esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
 
-console.log(process.env.dbHOST)
+const host = 'host.docker.internal'
+// const host = 'localhost'
 
 const UserGrpOuting = sequelize.define('UserGrpOuting', {
     
     // attributes
-    USERID: {
+    UserID: {
         type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true
     },
-    GRPOUTINGID: {
+    GrpOutingID: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true
@@ -42,42 +43,24 @@ const UserGrpOuting = sequelize.define('UserGrpOuting', {
 
 app.post("/UserGrpOuting/create", (req, res) => {
 
-    axios.post('http://localhost:3002/grpouting', {
+    console.log(req.body)
+    axios.post('http://'+host+':3002/grpouting', {
         "CreatedBy": req.body.CreatedBy
     })
     .then((response) => {
         // console.log(`statusCode: ${response.statusCode}`)
-        console.log(response.data)
+        // console.log(response)
         UserGrpOuting.create(
             {
-                "USERID": "123abc",
-                "GROUPOUTINGID": 4
+                "UserID": "123abc",
+                "GrpOutingID": response.data.GrpOutingID
             }
         )
-        // res.send(response.data)
+        res.send(response.data)
     })
     .catch((error) => {
         console.error(error)
-    })
-
-
-    // request('http://localhost:3002/grpouting', {
-    //     data: {
-    //         "createdBy": req.body.CreatedBy
-    //     }
-        
-    //   },
-    // (err, response, body) => {
-    //     if (err) { 
-    //         return res.send(err); 
-    //     }
-    //     // console.log(response)
-    //     res.send(response)
-    //     // UserGrpOuting.create(req.body).then(result => {
-    //     //     res.json(result)
-    //     // })
-    // });
-    
+    })    
 })
 
 app.post("/UserGrpOuting/join", (req, res) => {
@@ -92,7 +75,7 @@ app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
 
     UserGrpOuting.findAll({
         where: {
-            GRPOUTINGID: gid
+            GrpOutingID: gid
         }
     }).then((groupUsers) => {
         console.log(groupUsers)
@@ -102,7 +85,7 @@ app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
         usersProcessed = 0;
 
         groupUsers.forEach(user => {
-            request('http://localhost:3001/user/' + user.USERID, { json: true }, (err, response, u) => {
+            request('http://'+host+':3001/user/' + user.UserID, { json: true }, (err, response, u) => {
                 if (err) { 
                     return res.send(err); 
                 }
@@ -124,7 +107,7 @@ app.get("/UserGrpOuting/user/:id", (req, res) => {
 
     UserGrpOuting.findAll({
         where: {
-            USERID: req.params.id
+            UserID: req.params.id
         }
     }).then((UserGrpOutings) => {
 
@@ -136,8 +119,8 @@ app.get("/UserGrpOuting/user/:id", (req, res) => {
 
         UserGrpOutings.forEach(group => {
 
-            console.log(group.GRPOUTINGID)
-            request('http://localhost:3002/grpouting/' + group.GRPOUTINGID, { json: true }, (err, response, g) => {
+            console.log(group.GrpOutingID)
+            request('http://'+host+':3002/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
                 if (err) { 
                     return res.send(err); 
                 }

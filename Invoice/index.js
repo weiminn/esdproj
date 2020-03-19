@@ -33,42 +33,45 @@ var bucket = admin.storage().bucket();
 
 const sequelize = new Sequelize('Invoice', 'admin', 'asdf1234', {
     // host: process.env.dbHOST,//'localhost',
-    host: "testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
+    host: "esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
+
+// const host = 'host.docker.internal'
+const host = 'localhost'
 
 const Invoice = sequelize.define(
     'Invoice', 
     {
         // attributes
-        INVOICEID: {
+        InvoiceID: {
             type: Sequelize.INTEGER,
             allowNull: true,
             primaryKey: true,
             autoIncrement: true,
         },
-        INVOICEDATETIME: {
+        InvoiceDateTime: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW,
             allowNull: false,
         },
-        DESCRIPTION: {
+        Description: {
             type: Sequelize.STRING,
             allowNull: true,
         },
-        TITLE: {
+        Title: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        PHOTOLINK: {
+        PhotoLink: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        GRPOUTINGID: {
+        GrpOutingID: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-        AMOUNT: {
+        Amount: {
             type: Sequelize.FLOAT,
             allowNull: false,
         },
@@ -82,17 +85,17 @@ const UserInvoice = sequelize.define(
     'UserInvoice', 
     {
         // attributes
-        USERID: {
+        UserID: {
             type: Sequelize.STRING,
             allowNull: false,
             primaryKey: true,
         },
-        INVOICEID: {
+        InvoiceID: {
             type: Sequelize.STRING,
             allowNull: false,
             primaryKey: true
         },
-        OWNER: {
+        Owner: {
             type: Sequelize.BOOLEAN,
             allowNull: false,
         }
@@ -102,28 +105,28 @@ const UserInvoice = sequelize.define(
     }
 );
 
-app.post("/invoice", uploadDisk.single("FILE"), (req, res) => {
+app.post("/invoice", uploadDisk.single("File"), (req, res) => {
     // console.log(req.body)
     Invoice.create(req.body).then(result => {
         
         // console.log(req.body)
         // console.log(result)
-        if(result.INVOICEID) {
+        if(result.InvoiceID) {
 
-            console.log(req.body.USERS)
-            var users = req.body.USERS
+            console.log(req.body.Users)
+            var users = req.body.Users
 
             // return true
             users.forEach(user => {
                 UserInvoice.create({
-                    USERID: user.USERID,
-                    INVOICEID: result.INVOICEID,
-                    OWNER: user.OWNER == 'true'
+                    UserID: user.UserID,
+                    InvoiceID: result.InvoiceID,
+                    Owner: user.Owner == 'true'
                 })
             });
 
             var toRes
-            const newName = result.INVOICEID + path.extname(req.file.filename)
+            const newName = result.InvoiceID + path.extname(req.file.filename)
 
             fs.rename('./tmp/' + req.file.filename,
                 './tmp/'+newName,
@@ -132,10 +135,10 @@ app.post("/invoice", uploadDisk.single("FILE"), (req, res) => {
                         (ffres) => {
                             console.log("successful")
                             Invoice.update(
-                                {PHOTOLINK: newName},
-                                {where: {INVOICEID: result.INVOICEID}}
+                                {PhotoLink: newName},
+                                {where: {InvoiceID: result.InvoiceID}}
                             )
-                            result.PHOTOLINK = newName
+                            result.PhotoLink = newName
                             toRes = result
                         }, 
                         (rej) => {
@@ -179,13 +182,13 @@ app.get("/invoice/:id/owner", (req, res) => {
             UserInvoice.findAll(
                 {
                     where: {
-                        INVOICEID: iid,
-                        OWNER: true
+                        InvoiceID: iid,
+                        Owner: true
                     }
                 }
             ).then((userInvoice) => {
-                console.log(userInvoice[0].USERID)
-                request('http://localhost:3001/user/' + userInvoice[0].USERID, { json: true }, (e,r,b) => {
+                console.log(userInvoice[0].UserID)
+                request('http://'+host+':3001/user/' + userInvoice[0].UserID, { json: true }, (e,r,b) => {
                     if (e)
                         return res.send(e)
                     return res.send(b)
@@ -203,7 +206,7 @@ app.get("/invoice/grpouting/:id", (req, res) => {
 
     Invoice.findAll({
         where: {
-            GRPOUTINGID: gid
+            GrpOutingID: gid
         }
     }).then((invoices) => {
         return res.send(invoices)        
@@ -219,16 +222,16 @@ app.get("/invoice/grpouting/:gid/user/:uid", (req, res) => {
 
     UserInvoice.findAll({
         where: {
-            USERID: uid
+            UserID: uid
         }
     }).then((userInvoices) => {
         console.log("found: " + userInvoices.length)
         userInvoices.forEach(userInvoice => {
-            Invoice.findByPk(userInvoice.INVOICEID).then((invoice) => {
+            Invoice.findByPk(userInvoice.InvoiceID).then((invoice) => {
                 invoices.push(invoice)
                 console.log(invoices)
                 if(invoices.length == userInvoices.length) {
-                    const toReturn = invoices.filter(inv => inv.GRPOUTINGID == gid)
+                    const toReturn = invoices.filter(inv => inv.GrpOutingID == gid)
                     console.log(invoices.length + ": " + toReturn.length)
                     return res.send(toReturn)
                 }

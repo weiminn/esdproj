@@ -8,7 +8,7 @@ const amqp = require('amqplib/callback_api');
 
 const sequelize = new Sequelize('Settlement', 'admin', 'asdf1234', {
     // host: process.env.dbHOST,//'localhost',
-    host: "testing.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
+    host: "esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
 
@@ -17,6 +17,9 @@ app.use(bodyparser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyparser.json())
+
+// const host = 'host.docker.internal'
+const host = 'localhost'
 
 const Settlement = sequelize.define('Settlement', 
     {

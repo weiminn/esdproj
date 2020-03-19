@@ -3,10 +3,10 @@ CREATE DATABASE User;
 use User;
 
 CREATE TABLE User
-( USERID VARCHAR(100) NOT NULL,
-  USERNAME VARCHAR(100) NOT NULL,
-  EMAIL VARCHAR(100) NOT NULL,
-  PWD VARCHAR(100) NOT NULL,
+( UserID VARCHAR(100) NOT NULL,
+  Username VARCHAR(100) NOT NULL,
+  Email VARCHAR(100) NOT NULL,
+  Pwd VARCHAR(100) NOT NULL,
   CONSTRAINT USER_PK PRIMARY KEY (USERID) );
   
 INSERT INTO User VALUES("123abc", "Hardyanto", "wei.minn.2018@sis.smu.edu.sg", "Hardy123");
@@ -32,9 +32,9 @@ CREATE DATABASE UserGrpOuting;
 use UserGrpOuting;
 
 CREATE TABLE UserGrpOuting 
-	(USERID VARCHAR(100) not null,
+	(UserID VARCHAR(100) not null,
 	 GrpOutingID VARCHAR(100) not null,
-	CONSTRAINT USERGRPOUTING_PK PRIMARY KEY (USERID, GrpOutingID));
+	CONSTRAINT USERGRPOUTING_PK PRIMARY KEY (UserID, GrpOutingID));
 
 
 INSERT INTO UserGrpOuting VALUES("123abc", "1");
@@ -46,26 +46,27 @@ CREATE DATABASE Invoice;
 use Invoice;
 
 create table Invoice
-	( INVOICEID INT not null AUTO_INCREMENT,
-	INVOICEDATETIME DATETIME not null,
-	DESCRIPTION VARCHAR(100) not null,
-	TITLE VARCHAR(100) not null,
-	AMOUNT DECIMAL(6,2) not null,
+	( InvoiceID INT not null AUTO_INCREMENT,
+	InvoiceDateTime DATETIME not null,
+	Description VARCHAR(100) not null,
+	Title VARCHAR(100) not null,
+	Amount DECIMAL(6,2) not null,
 	GrpOutingID INT not null,
-	PHOTOLINK VARCHAR(100),
-	CONSTRAINT INVOICE_PK PRIMARY KEY (INVOICEID)
+	PhotoLink VARCHAR(100),
+	CONSTRAINT INVOICE_PK PRIMARY KEY (InvoiceID)
 	);
     
-INSERT INTO Invoice (INVOICEDATETIME, DESCRIPTION, TITLE, AMOUNT, GrpOutingID) VALUES("2017-06-15 09:34:21", "Movie", "Movie Outing", 200, 1);
-INSERT INTO Invoice (INVOICEDATETIME, DESCRIPTION, TITLE, AMOUNT, GrpOutingID) VALUES("2019-06-15 09:34:21", "Movie", "Movie Outing", 300, 1);
+INSERT INTO Invoice (InvoiceDateTime, Description, Title, Amount, GrpOutingID) VALUES("2017-06-15 09:34:21", "Movie", "Movie Outing", 200, 1);
+INSERT INTO Invoice (InvoiceDateTime, Description, Title, Amount, GrpOutingID) VALUES("2019-06-15 09:34:21", "Movie", "Movie Outing", 300, 1);
     
 CREATE TABLE UserInvoice
 ( UserID VARCHAR(100) NOT NULL,
   InvoiceID INT NOT NULL,
   Owner TINYINT(1) NOT NULL,
-  CONSTRAINT UserInvoice_PK PRIMARY KEY (USERID, INVOICEID));
+  CONSTRAINT UserInvoice_PK PRIMARY KEY (UserID, InvoiceID));
 
 INSERT INTO UserInvoice VALUES("123abc", 1, 1);
+INSERT INTO UserInvoice VALUES("456abc", 2, 1);
 
 DROP DATABASE IF EXISTS Settlement;
 CREATE DATABASE Settlement;
@@ -76,6 +77,6 @@ CREATE TABLE Settlement
 	InvoiceID VARCHAR(100) NOT NULL,
 	TransactionID VARCHAR(100) NOT NULL,
 	SettlementDateTime DATETIME NOT NULL,
-	CONSTRAINT SETTLEMENT_PK PRIMARY KEY (USERID, INVOICEID));
+	CONSTRAINT SETTLEMENT_PK PRIMARY KEY (UserID, InvoiceID));
 
 INSERT INTO Settlement VALUES("123abc", "1", "T123", "2017-06-16 09:34:21");

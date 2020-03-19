@@ -11,7 +11,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy code into pwd of docker image
-COPY ./group.py .
+COPY ./grpouting.py .
 
 # execute inside the image
-CMD [ "python", "./group.py" ]
+CMD [ "python", "./grpouting.py" ]

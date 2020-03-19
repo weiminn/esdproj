@@ -21,6 +21,9 @@ let transport = nodemailer.createTransport({
     }
 });
 
+const host = 'host.docker.internal'
+// const host = 'localhost'
+
 const mail = (toEmail, subject, cont) => {
 
     transport.sendMail({
@@ -52,22 +55,22 @@ amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudam
                                     (msg) => {
                                         msg = JSON.parse(msg.content)
 
-                                        request.get('http://localhost:3001/user/' + msg.UserID, { json: true }, (err, uresponse) => {
+                                        request.get('http://' + host + ':3001/user/' + msg.UserID, { json: true }, (err, uresponse) => {
                                             console.log(uresponse.body)
-                                            const email = uresponse.body.EMAIL
-                                            request.get('http://localhost:3004/invoice/' + msg.InvoiceID, { json: true }, (err, iresponse) => {
+                                            const email = uresponse.body.Email
+                                            request.get('http://' + host + ':3004/invoice/' + msg.InvoiceID, { json: true }, (err, iresponse) => {
                                                 console.log(iresponse.body)
-                                                const username = uresponse.body.USERNAME
-                                                const invoiceName = iresponse.body.TITLE
+                                                const username = uresponse.body.Username
+                                                const invoiceName = iresponse.body.Title
                                                 const invoiceTransaction = msg.TransactionID
                                                 
                                                 mail(email, "Invoice Paid For", "Dear " + username + 
                                                 ", \n\nYou have paid for '" + invoiceName + "' via Transaction: " + invoiceTransaction)
 
-                                                request.get('http://localhost:3004/invoice/' + iresponse.body.INVOICEID + '/owner' , { json: true }, (err, oresponse, ob) => {
+                                                request.get('http://' + host + ':3004/invoice/' + iresponse.body.InvoiceID + '/owner' , { json: true }, (err, oresponse, ob) => {
                                                     console.log(ob)
-                                                    const ownername = oresponse.body.USERNAME
-                                                    const oemail = oresponse.body.EMAIL
+                                                    const ownername = oresponse.body.Username
+                                                    const oemail = oresponse.body.Email
 
                                                     mail(oemail, "Your Invoice Settled", 
                                                     "Dear " + ownername + 
