@@ -5,6 +5,9 @@ const Sequelize = require('sequelize')
 const request = require('request')
 const nodemailer = require('nodemailer')
 const amqp = require('amqplib/callback_api');
+const cors = require('cors')
+ 
+app.use(cors())
 
 const sequelize = new Sequelize('Settlement', 'admin', 'asdf1234', {
     // host: process.env.dbHOST,//'localhost',

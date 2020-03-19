@@ -4,9 +4,10 @@ const bodyparser = require('body-parser')
 const Sequelize = require('sequelize')
 const request = require('request')
 const nodemailer = require('nodemailer')
-
-var amqp = require('amqplib/callback_api')
-
+const amqp = require('amqplib/callback_api')
+const cors = require('cors')
+ 
+app.use(cors())
 // const sequelize = new Sequelize('book', 'root', '', {
 //     host: 'localhost',
 //     dialect: 'mysql'

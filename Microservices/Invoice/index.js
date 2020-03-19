@@ -7,6 +7,9 @@ const admin = require('firebase-admin')
 const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
+const cors = require('cors')
+ 
+app.use(cors())
 
 app.use(bodyparser.urlencoded({extended: false}))
 app.use(bodyparser.json())

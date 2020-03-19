@@ -5,6 +5,9 @@ const Sequelize = require('sequelize')
 const request = require('request')
 const axios = require('axios')
 const cjson = require('circular-json')
+const cors = require('cors')
+ 
+app.use(cors())
 
 // parse application/x-www-form-urlencoded
 app.use(bodyparser.urlencoded({ extended: false }))
