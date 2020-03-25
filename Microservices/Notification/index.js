@@ -22,8 +22,8 @@ let transport = nodemailer.createTransport({
     }
 });
 
-const host = 'host.docker.internal'
-// const host = 'localhost'
+//const host = 'host.docker.internal'
+ const host = 'localhost'
 
 const mail = (toEmail, subject, cont) => {
 

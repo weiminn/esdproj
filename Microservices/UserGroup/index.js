@@ -21,8 +21,8 @@ const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
     dialect: 'mysql'
 })
 
-const host = 'host.docker.internal'
-// const host = 'localhost'
+// const host = 'host.docker.internal'
+const host = 'localhost'
 
 const UserGrpOuting = sequelize.define('UserGrpOuting', {
     
