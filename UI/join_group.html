@@ -47,7 +47,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="grouplisting.html">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="create_group.html">Create Group</a>
@@ -65,7 +65,7 @@
    <div class="card col-sm-6 col-lg-4 mx-auto" style="margin-top:40px" >
       
       <div class="card-body">
-         <form action="index.html">
+         <form action="grouplisting.html">
             <div class="form-group" >
               <label for="groupname">Group Id</label>
               <input type="text" class="form-control" id="group_ID" aria-describedby="groupHelp" placeholder="Enter group ID">
@@ -81,6 +81,10 @@
             
       
     <script>
+
+      var userid=localStorage.getItem("userid");
+      localStorage.setItem("userid",userid);
+      
       async function postData (serviceURL,requestBody){
          var requestParam ={
                method: 'POST', 
@@ -105,13 +109,13 @@
           // Change serviceURL to your own
             
           var grpoutingid = $('#group_ID').val();   
-          var userid = "456abc"
-         
+          
+         console.log(userid)
          var serviceURL = "http://localhost:3003/usergrpouting/join"
          // var serviceURL = "http://52.76.30.61:8000/api/v1/UserGroupOuting/join";
          var requestBody ={
            UserID :userid,
-            GrpOutingID: grpoutingid
+          GrpOutingID: grpoutingid
                   
          };
          postData(serviceURL,requestBody);

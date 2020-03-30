@@ -11,7 +11,7 @@ const cors = require('cors')
  
 app.use(cors())
 
-app.use(bodyparser.urlencoded({extended: false}))
+app.use(bodyparser.urlencoded({extended: true}))
 app.use(bodyparser.json())
 
 var storage = multer.diskStorage({
@@ -109,15 +109,16 @@ const UserInvoice = sequelize.define(
 );
 
 app.post("/invoice", uploadDisk.single("File"), (req, res) => {
-    // console.log(req.body)
+    
     Invoice.create(req.body).then(result => {
         
-        // console.log(req.body)
+        //apprentl the file is not included in the request
+        console.log(req.body)
         // console.log(result)
         if(result.InvoiceID) {
 
             console.log(req.body.Users)
-            var users = req.body.Users
+            var users = JSON.parse(req.body.Users)
 
             // return true
             users.forEach(user => {

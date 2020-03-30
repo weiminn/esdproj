@@ -1,53 +1,49 @@
 <!DOCTYPE html>
 <html>
- 
+
 <head>
-    <link rel="stylesheet" href="style.css">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width">
- 
-    <title>Create group</title>
- 
-    <link rel="stylesheet" href="">
-    <!--[if lt IE 9]>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
+
+  <title>Create group</title>
+
+  <link rel="stylesheet" href="">
+  <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <!-- Bootstrap libraries -->
-    <meta name="viewport" 
-        content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" 
-    crossorigin="anonymous">
- 
-    <!-- Latest compiled and minified JavaScript -->
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script 
-    src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    
-    <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+  <!-- Bootstrap libraries -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
     integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
     crossorigin="anonymous"></script>
-    
-    <script 
-    src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
     integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
     crossorigin="anonymous"></script>
 </head>
+
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="grouplisting.html">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="create_group.html">Create Group</a>
@@ -61,73 +57,93 @@
       </ul>
     </div>
   </nav>
-  <div class= "container-fluid ">
-  <div class="card col-sm-6 col-lg-4 mx-auto "style="margin:40px;">
-   <div class="card-body " style="margin-top:35px;margin-bottom:35px;margin-left:20px;margin-right:20px;padding:15px" id="printcard">
-     
-    
-   </div>
- </div>
-</div>
+  <div class="container-fluid ">
+    <div class="card col-sm-6 col-lg-4 mx-auto " style="margin:40px;">
+      <div class="card-body " style="margin-top:35px;margin-bottom:35px;margin-left:20px;margin-right:20px;padding:15px"
+        id="printcard">
 
 
-    
-            
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+  <script>
+    $(async () => {
+
+      var config = {
+        apiKey: "AIzaSyC2FjP9xCr8KWsCo7NR0K2Ldv3PkNNClv4 ",
+        projectId: "esdproj-1d7cf",
+        storageBucket: "gs://esdproj-1d7cf.appspot.com/"
+      };
+      firebase.initializeApp(config);
+
       
-<script>
-  $(async() => {  
 
-     function showError(message) {
-  // Display an error under the main container
-    $('#user')
-        .append("<label>"+message+"</label>");
-}
-  
-    var u = $('#user').val();   
-    // var serviceURL = "http://localhost:3004/invoice/1"; 
-   var serviceURL ="http://52.76.30.61:8000/api/v1/invoice/1"
- 
-    try {
+      function showError(message) {
+        // Display an error under the main container
+        $('#user')
+          .append("<label>" + message + "</label>");
+      }
+      var userid=localStorage.getItem("userid");
+      localStorage.setItem("userid",userid)
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const invoiceid = urlParams.get('invoiceID')
+      var u = $('#user').val();
+      // var serviceURL = "http://localhost:3004/invoice/1"; 
+      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/"+invoiceid
+
+      try {
         const response = await fetch(
-           serviceURL, { method: 'GET' }
+          serviceURL, { method: 'GET' }
         );
         const data = await response.json();
-        if(response.ok){
-            console.log(data)
+        if (response.ok) {
+          console.log(data)
         }
 
-      var invoice= data;
-        
-    
-    
-      var html ='<h5 class="card-title">'+invoice.InvoiceID+' : '+invoice.Title+' </h5>'
-        html +=' <h6 class="card-subtitle mb-3 text-muted">Description : '+invoice.Description+'</h6>'
-        html +=' <h6 class="card-subtitle mb-2 text-muted">Description : '+invoice.InvoiceDateTime+'</h6>'
-        html +=' <p class="card-text">Total Amount: '+invoice.Amount+'</p>'
-        html +='<label class="card-text"></label>'
-        html +='<img src="..." class="rounded mx-auto d-block" alt="...">'
-        html +='<a href="#" class="card-link">Pay</a> '
-        html +=' <a href="#" class="card-link" onclick="history.back()">Cancel</a>'
-        html +=' </div>'
-        html +=' </div>'
-        html +=' </div>'; 
-        $('#printcard').append(html);
-           
- 
-     
-   
-    
-  
+        var invoice = data;
+        var file = firebase.storage().ref(invoice.PhotoLink)
+      
+      file.getDownloadURL().then((url) => {
+        $('#displayImg').attr('src', url)
+            .width(150)
+            .height(200);
+      })
 
-  }catch (error) {
+
+        var html = '<h5 class="card-title">' + invoice.InvoiceID + ' : ' + invoice.Title + ' </h5>'
+        html += ' <h6 class="card-subtitle mb-3 text-muted">Description : ' + invoice.Description + '</h6>'
+        html += ' <h6 class="card-subtitle mb-2 text-muted">Description : ' + invoice.InvoiceDateTime + '</h6>'
+        html += ' <p class="card-text">Total Amount: ' + invoice.Amount + '</p>'
+        html += '<label class="card-text"></label>'
+        html += '<img id="displayImg" src="..." class="rounded mx-auto d-block" alt="...">'
+        html += '<a href="#" class="card-link">Pay</a> '
+        html += ' <a href="#" class="card-link" onclick="history.back()">Cancel</a>'
+        html += ' </div>'
+        html += ' </div>'
+        html += ' </div>';
+        $('#printcard').append(html);
+
+
+
+
+
+
+
+      } catch (error) {
         // Errors when calling the service; such as network error, 
         // service offline, etc
         showError
-        ('There is a problem retrieving books data, please try again later.<br />'+error);
-     
-   } // error
+          ('There is a problem retrieving books data, please try again later.<br />' + error);
 
-});
-</script>
- </body>
- </html>  
+      } // error
+
+    });
+  </script>
+</body>
+
+</html>
