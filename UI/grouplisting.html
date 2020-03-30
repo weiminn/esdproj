@@ -58,7 +58,7 @@
     </div>
   </nav>
   <div class="container-fluid justify-content-md-center">
-    <h1 class="display-4 ">Group Listing</h1>
+    <h1 class="display-4 " id="groups" style="font-size:10vw;font-weight:400;"></h1>
     <div class="row" id="printcard"></div>
   </div>
   </div>
@@ -68,6 +68,9 @@
 
 
   <script>
+    var userid = localStorage.getItem("userid");
+    localStorage.setItem("userid", userid);
+    $("#groups").html(userid +"'s Groups: ")
     $(async () => {
 
       function showError(message) {
@@ -75,11 +78,10 @@
         $('#message')
           .append("<label>" + message + "</label>");
       }
-      var userid=localStorage.getItem("userid");
-      localStorage.setItem("userid",userid);
+
       var u = $('#message').val();
       //var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/user/123abc"
-      var serviceURL = "http://localhost:3003/usergrpouting/user/"+userid
+      var serviceURL = "http://localhost:3003/usergrpouting/user/" + userid
 
       try {
         const response = await fetch(
@@ -94,8 +96,8 @@
           var groupinfo = null;
           var count = 0;
           //var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
-          var serviceURL2 = "http://localhost:3002/grpouting/"+group.GrpOutingID;
-          var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/"+userid
+          var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
+          var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
           try {
 
             const information = await fetch(
@@ -120,13 +122,13 @@
           } catch{
             showError('There is a problem retrieving  data, please try again later.<br />' + error);
           }
-          var url = "group.html?grpOutingID="+group.GrpOutingID
+          var url = "group.html?grpOutingID=" + group.GrpOutingID
           var html = '<div class="card container-fluid " style="width:95%">'
           html += '<div class="card-body  justify-content-md-center">'
           html += '<h5 class="card-title">' + group.GrpOutingID + ' : ' + groupinfo.CreatedBy + '</h5>'
           html += '<h6 class="card-subtitle mb-2 text-muted">Created By: ' + groupinfo.CreatedBy + '</h6>'
           html += '<p class="card-text">Number Of Invoices: ' + count + '</p>'
-          html += '<a href="'+url+'"class="card-link">See More</a>'
+          html += '<a href="' + url + '"class="card-link">See More</a>'
           html += ' </div>'
           html += ' </div>'
           html += ' </div>';

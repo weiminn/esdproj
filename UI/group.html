@@ -60,7 +60,7 @@
     </div>
   </nav>
   <div class="container-fluid justify-content-md-center">
-    <h1 class="display-4 ">Group #id</h1>
+    <h1 class="display-4 " id ="groups"></h1>
     <div class="row" id="printcard"></div>
     <div class='container-fluid' style="text-align: center;margin: 20px">
       <a href="create_invoice.html" id="createinvoice" onclick="change()" class="btn btn-primary"
@@ -86,6 +86,8 @@
     const urlParams = new URLSearchParams(queryString);
     const grpid = urlParams.get('grpOutingID')
     localStorage.setItem("grpoutingid",grpid)
+
+    $("#groups").html("Group " + grpid)
     $(async () => {
     
 
