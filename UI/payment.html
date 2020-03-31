@@ -81,7 +81,7 @@
 
   <script
     src="https://www.paypal.com/sdk/js?client-id=AWEBdvLIMyHfEUhsGWilTMs20bbjz5tuJFfpQZSKVObPjoM5jzbI2ZkpLvtxsQ0frSR7yKcqR63_50x8&currency=SGD"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.
-    </script>
+  </script>
   <script>
     var pay = 0
     const queryString = window.location.search;
@@ -91,7 +91,11 @@
 
     async function postData(serviceURL, requestBody) {
       var requestParam = {
-        method: 'POST', body: requestBody
+        method: 'POST', 
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
       }
       try {
 
@@ -174,14 +178,14 @@
         // This function captures the funds from the transaction.
         return actions.order.capture().then(function (details) {
           // This function shows a transaction success message to your buyer.
-         // var serviceURL = "http://52.76.30.61:8000/api/v1/settlement";
+          // var serviceURL = "http://52.76.30.61:8000/api/v1/settlement";
           var serviceURL1 = "http://localhost:3005/settlement";
-         
+
           var requestBody = {
-           UserID : userid,
-           InvoiceID :invoiceid,
-           TransactionID: details.id,
-           Amount: 50
+            UserID: userid,
+            InvoiceID: invoiceid,
+            TransactionID: details.id,
+            Amount: 50
           };
 
           postData(serviceURL1, requestBody);

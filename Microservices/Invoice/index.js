@@ -41,7 +41,8 @@ const sequelize = new Sequelize('Invoice', 'admin', 'asdf1234', {
 })
 
 // const host = 'host.docker.internal'
-const userHost = '13.228.102.119'
+// const userHost = '13.228.102.119'
+const userHost = "localhost"
 
 const Invoice = sequelize.define(
     'Invoice', 

@@ -17,7 +17,7 @@ const sequelize = new Sequelize('Settlement', 'admin', 'asdf1234', {
 })
 
 // parse application/x-www-form-urlencoded
-app.use(bodyparser.urlencoded({ extended: false }))
+app.use(bodyparser.urlencoded({ extended: true }))
 
 // parse application/json
 app.use(bodyparser.json())
@@ -57,11 +57,12 @@ const Settlement = sequelize.define('Settlement',
 app.post("/settlement", (req, res) => {
     console.log(req.body)
     Settlement.create(req.body).then(result => {
-        console.log(result)
+        // console.log(result)
         res.json(result)
 
-        request.get('http://' + host + ':3004/invoice/' + iresponse.body.InvoiceID + '/owner' , { json: true }, (err, response, body) => {
-            PO.payout(body.Email, req.body.Amount)
+        request.get('http://' + host + ':3004/invoice/' + req.body.InvoiceID + '/owner' , { json: true }, (err, response, body) => {
+            console.log(response.body)
+            PO.payout(response.body.Email, req.body.Amount)
         })
 
         amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudamqp.com/salczyxm', (err, conn) => {

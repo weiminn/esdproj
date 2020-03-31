@@ -12,11 +12,15 @@ module.exports.payout = (email, amount) => { // ('user1.esd@gmail.com', 100, aT)
             'grant_type': 'client_credentials'
         }
     }, (e, r, b) => {
-        if(e)
+        if(e){
+            console.log("Access token error:")
             console.error(e)
+        }
         else {
             const aT = JSON.parse(b).access_token
             console.log(aT)
+            console.log(email)
+            console.log(amount)
 
             pO(email, amount, aT)
     }})
@@ -42,14 +46,16 @@ const pO = (email, amount, aT) => {
                         recipient_type: 'EMAIL',
                         amount: { value: amount, currency: 'SGD' },
                         receiver: email,
-                        // note: 'Payouts sample transaction',
-                        // sender_item_id: 'item-2-1584525551066'
+                        note: 'Payouts sample transaction',
+                        sender_item_id: Math.random()
                     } 
                 ]
         })
     }, (err, res, body) => {
-        if(err)
+        if(err) {
+            console.log("Payout error:")
             console.error(err)
+        }
         else
             console.log(body)
     })
