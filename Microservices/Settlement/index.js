@@ -6,6 +6,7 @@ const request = require('request')
 const nodemailer = require('nodemailer')
 const amqp = require('amqplib/callback_api');
 const cors = require('cors')
+const PO = require('./payout')
  
 app.use(cors())
 
@@ -58,6 +59,10 @@ app.post("/settlement", (req, res) => {
     Settlement.create(req.body).then(result => {
         console.log(result)
         res.json(result)
+
+        request.get('http://' + host + ':3004/invoice/' + iresponse.body.InvoiceID + '/owner' , { json: true }, (err, response, body) => {
+            PO.payout(body.Email, req.body.Amount)
+        })
 
         amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudamqp.com/salczyxm', (err, conn) => {
             conn.createChannel((err, ch) => {
