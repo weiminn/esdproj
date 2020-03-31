@@ -97,7 +97,9 @@
 
   <script>   
 
-    var grpid = localStorage.getItem("grpoutingid");
+    var grpid = localStorage.getItem("grpOutingID");
+    console.log(grpid)
+    var userid = localStorage.getItem("userid");
     async function postData(serviceURL, requestBody) {
       var requestParam = {
         method: 'POST', body: requestBody
@@ -106,7 +108,9 @@
 
         const response = await fetch(serviceURL, requestParam);
         data = await response.json();
-
+        if (response.ok){
+          
+        }
       } catch (error) {
         //console.error(error);
       }
@@ -120,10 +124,10 @@
       event.preventDefault();
 
 
-      var serviceURL = "http://localhost:3003/usergrpouting/grpouting/" + grpid
-      //var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/"+grpid;
+     var serviceURL = "http://localhost:3003/usergrpouting/grpouting/" + grpid;
+     // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/"+grpid;
 
-      var users = [{ "UserID": "123abc" }, { "UserID": "456abc" }]
+      //var users = [{ "UserID": "123abc" }, { "UserID": "456abc" }]
       var user_list = []
       try {
         const response = await fetch(
@@ -132,14 +136,20 @@
         const data = await response.json();
         if (response.ok) {
           // console.log(data)
+          
         }
 
         var users1 = data;
 
-        
+      
         for (const user of users1) {
-          
-          user_list.push({"UserID":user.UserID})
+            
+          if( user.UserID == userid){
+            console.log(user.UserID)
+            user_list.push({"UserID":user.UserID,"Owner":true})
+          }else{
+            user_list.push({"UserID":user.UserID,"Owner":false})
+          }
           console.log(user_list)
         }
       } catch{
@@ -147,19 +157,19 @@
       }
       // Change serviceURL to your own
       const selectedFile = $('#input').prop('files')[0]
-      console.log(selectedFile)
+      //console.log(selectedFile)
       var title = $('#invoice_title').val();
       var amount = $('#invoice_amount').val();
       var description = $('#invoice_description').val();
 
-      //var users = [{ "UserID": "123abc" }, { "UserID": "456abc" }]
+      //var users = [{ "UserID": "123abc","Owner":true }, { "UserID": "456abc", "Owner": false}]
       var serviceURL = "http://localhost:3004/invoice"
-      // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice"; //it's pointed to docker, which i suspect isn't configured properly yet
+       //var serviceURL = "http://52.76.30.61:8000/api/v1/invoice"; 
 
       var data = new FormData()
       data.append('File', selectedFile);
       data.append('Title', title);
-      data.append('GrpOutingID', 1);
+      data.append('GrpOutingID', grpid);
       data.append('Description', description);
       data.append('Amount', amount);
       data.append('Users', JSON.stringify(user_list));

@@ -117,15 +117,15 @@ app.post("/invoice", uploadDisk.single("File"), (req, res) => {
         // console.log(result)
         if(result.InvoiceID) {
 
-            console.log(req.body.Users)
             var users = JSON.parse(req.body.Users)
+            console.log(users)
 
             // return true
             users.forEach(user => {
                 UserInvoice.create({
                     UserID: user.UserID,
                     InvoiceID: result.InvoiceID,
-                    Owner: user.Owner == 'true'
+                    Owner: user.Owner
                 })
             });
 

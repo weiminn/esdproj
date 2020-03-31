@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width">
 
-  <title>Create group</title>
+  <title>Invoice Details</title>
 
   <link rel="stylesheet" href="">
   <!--[if lt IE 9]>
@@ -80,21 +80,21 @@
       };
       firebase.initializeApp(config);
 
-      
+
 
       function showError(message) {
         // Display an error under the main container
         $('#user')
           .append("<label>" + message + "</label>");
       }
-      var userid=localStorage.getItem("userid");
-      localStorage.setItem("userid",userid)
+      var userid = localStorage.getItem("userid");
+      localStorage.setItem("userid", userid)
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const invoiceid = urlParams.get('invoiceID')
       var u = $('#user').val();
       // var serviceURL = "http://localhost:3004/invoice/1"; 
-      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/"+invoiceid
+      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/" + invoiceid
 
       try {
         const response = await fetch(
@@ -107,22 +107,22 @@
 
         var invoice = data;
         var file = firebase.storage().ref(invoice.PhotoLink)
-      
-      file.getDownloadURL().then((url) => {
-        $('#displayImg').attr('src', url)
+
+        file.getDownloadURL().then((url) => {
+          $('#displayImg').attr('src', url)
             .width(150)
             .height(200);
-      })
+        })
 
-
+        var url = "payment.html?invoiceID="+invoiceid
         var html = '<h5 class="card-title">' + invoice.InvoiceID + ' : ' + invoice.Title + ' </h5>'
         html += ' <h6 class="card-subtitle mb-3 text-muted">Description : ' + invoice.Description + '</h6>'
         html += ' <h6 class="card-subtitle mb-2 text-muted">Description : ' + invoice.InvoiceDateTime + '</h6>'
         html += ' <p class="card-text">Total Amount: ' + invoice.Amount + '</p>'
         html += '<label class="card-text"></label>'
         html += '<img id="displayImg" src="..." class="rounded mx-auto d-block" alt="...">'
-        html += '<a href="#" class="card-link">Pay</a> '
-        html += ' <a href="#" class="card-link" onclick="history.back()">Cancel</a>'
+        html += '<a href="'+url+'"class="card-link">Pay</a> '
+        html += ' <a  class="card-link" onclick="history.back()">Cancel</a>'
         html += ' </div>'
         html += ' </div>'
         html += ' </div>';

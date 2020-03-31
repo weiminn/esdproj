@@ -43,7 +43,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="grouplisting.html">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="create_group.html">Create Group</a>
@@ -58,7 +58,7 @@
     </div>
   </nav>
   <div class="container-fluid justify-content-md-center">
-    <h1 class="display-4 " id="groups" style="font-size:10vw;font-weight:400;"></h1>
+    <h6 class="display-4 " id="groups" style="font-size:7vw;font-weight:300;"></h6>
     <div class="row" id="printcard"></div>
   </div>
   </div>
@@ -79,9 +79,10 @@
           .append("<label>" + message + "</label>");
       }
 
-      var u = $('#message').val();
-      //var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/user/123abc"
-      var serviceURL = "http://localhost:3003/usergrpouting/user/" + userid
+      var u = $('#message').val(); 
+      //var serviceURL = "http://localhost:3003/usergrpouting/user/" + userid
+      var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/user/" + userid;
+     
 
       try {
         const response = await fetch(
@@ -95,9 +96,11 @@
         for (const group of groups) {
           var groupinfo = null;
           var count = 0;
-          //var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
-          var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
-          var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
+         
+          //var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
+          var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
+          //var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
+          var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
           try {
 
             const information = await fetch(

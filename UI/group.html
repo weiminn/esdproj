@@ -60,10 +60,10 @@
     </div>
   </nav>
   <div class="container-fluid justify-content-md-center">
-    <h1 class="display-4 " id ="groups"></h1>
+    <h1 class="display-4 " id="groups"></h1>
     <div class="row" id="printcard"></div>
     <div class='container-fluid' style="text-align: center;margin: 20px">
-      <a href="create_invoice.html" id="createinvoice" onclick="change()" class="btn btn-primary"
+      <a href="create_invoice.html" id="createinvoice" class="btn btn-primary"
         style="width:150px;height: 50px;padding:10px">Create
         Invoice</a>
     </div>
@@ -81,15 +81,15 @@
   <script>
     var userid = localStorage.getItem("userid");
     localStorage.setItem("userid", userid);
-    
+
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const grpid = urlParams.get('grpOutingID')
-    localStorage.setItem("grpoutingid",grpid)
+    localStorage.setItem("grpOutingID", grpid)
 
     $("#groups").html("Group " + grpid)
     $(async () => {
-    
+
 
       function showError(message) {
         // Display an error under the main container
@@ -99,8 +99,8 @@
 
       var u = $('#user').val();
 
-      var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
-      //var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/"+grpid;
+      //var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
+      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
 
 
 
@@ -111,6 +111,7 @@
         const data = await response.json();
         if (response.ok) {
           // console.log(data)
+          console.log(data)
         }
 
         var invoices = data;
@@ -128,7 +129,7 @@
             );
             const status = await response.json();
 
-            console.log(status.length)
+            //console.log(status.length)
             if (status.length == 0) {
               settlement = "Not Settled";
             } else {
@@ -139,6 +140,7 @@
             showError('There is a problem retrieving data, please try again later.<br />' + error);
           }
           var url = "invoice_details.html?invoiceID=" + invoice.InvoiceID
+          var url2 = "payment.html?invoiceID=" + invoice.InvoiceID
           var html = '<div class="card container-fluid " style="width:95%">'
           html += '<div class="card-body  justify-content-md-center">'
           html += '<h5 class="card-title">' + invoice.InvoiceID + ' : ' + invoice.Title + '</h5>'
@@ -146,7 +148,7 @@
           html += '<p class="card-text">Total Amount: $' + invoice.Amount + '</p>'
           html += '<p class="card-text">Status: ' + settlement + '</p>'
           html += '<a href="' + url + '"class="card-link">Invoice Detail</a>'
-          html += '<a href="#" class="card-link">Pay</a>'
+          html += '<a href="'+url2+'" class="card-link">Pay</a>'
           html += ' </div>'
           html += ' </div>'
           html += ' </div>';
