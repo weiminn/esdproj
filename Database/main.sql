@@ -9,8 +9,8 @@ CREATE TABLE User
   Pwd VARCHAR(100) NOT NULL,
   CONSTRAINT USER_PK PRIMARY KEY (USERID) );
   
-INSERT INTO User VALUES("123abc", "Hardyanto", "wei.minn.2018@sis.smu.edu.sg", "Hardy123");
-INSERT INTO User VALUES("456abc", "HongRen", "wei.minn.2018@sis.smu.edu.sg", "HongRen123");
+INSERT INTO User VALUES("123abc", "HongRen", "user1.esd@gmail.com", "HongRen123");
+INSERT INTO User VALUES("456abc", "Hardyanto", "user2.esd@gmail.com", "Hardy123");
 INSERT INTO User VALUES("789abc", "Ram", "wei.minn.2018@sis.smu.edu.sg", "Ram123");
 INSERT INTO User VALUES("123ccc", "Amanda", "wei.minn.2018@sis.smu.edu.sg", "Amanda123");
 
