@@ -2,7 +2,7 @@
 var http = require("https");
 const request = require('request')
 
-module.exports.payout = (email, amount, aT) => { // ('user1.esd@gmail.com', 100, aT)
+module.exports.payout = (email, amount) => { // ('user1.esd@gmail.com', 100, aT)
     request.post('https://api.sandbox.paypal.com/v1/oauth2/token', {
         headers: {
             "authorization": "Basic QVdFQmR2TElNeUhmRVVoc0dXaWxUTXMyMGJiano1dHVKRmZwUVpTS1ZPYlBqb001anpiSTJaa3BMdnR4c1EwZnJTUjd5S2NxUjYzXzUweDg6RUlQMkZDTUR1ZlJDLS1hWGhEMjdSWWw3bW5GTmtkNkRBY3ZTWU01NkRRaUw4eU5JS2ZvMlBfU1lMMmhETmR3Z3VLSWV2c2lpMmx1NXdfSGk=",

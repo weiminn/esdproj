@@ -13,6 +13,8 @@ USER node
 # execute into the image
 RUN npm install
 
+RUN mkdir tmp
+
 COPY --chown=node:node . .
 
 # copy code into pwd of docker image
