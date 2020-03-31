@@ -41,7 +41,7 @@ const sequelize = new Sequelize('Invoice', 'admin', 'asdf1234', {
 })
 
 // const host = 'host.docker.internal'
-const host = 'localhost'
+const userHost = '13.228.102.119'
 
 const Invoice = sequelize.define(
     'Invoice', 
@@ -191,7 +191,7 @@ app.get("/invoice/:id/owner", (req, res) => {
                 }
             ).then((userInvoice) => {
                 console.log(userInvoice[0].UserID)
-                request('http://'+host+':3001/user/' + userInvoice[0].UserID, { json: true }, (e,r,b) => {
+                request('http://'+userHost+':3001/user/' + userInvoice[0].UserID, { json: true }, (e,r,b) => {
                     if (e)
                         return res.send(e)
                     return res.send(b)
@@ -243,14 +243,20 @@ app.get("/invoice/grpouting/:gid/user/:uid", (req, res) => {
     })
 })
 
-// app.post("/invoice/:iid/user", (req, res) => {
-//     UserInvoices.create(req.body).then(result => {
-//         console.log(result)
-//         if(result.INVOICEID) {
+app.get("/invoice/:iid/users", (req, res) => {
 
-            
-//         }                
-//     })      
-// })
+    const iid = req.params.iid
+
+    UserInvoice.findAll({
+        where: {
+            InvoiceID: iid
+        }
+    }).then((userInvoices) => {
+        console.log(userInvoices.length)
+        return res.send({
+            NumberOfUsers: userInvoices.length
+        })
+    })   
+})
 
 app.listen(3004, () =>  console.log('Express server is running at port no: 3004'));

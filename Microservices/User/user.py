@@ -33,10 +33,10 @@ class User(db.Model):
 		return {"UserID": self.userID, "Username": self.userName, "Email": self.email, "Pwd": self.pwd}
 
 
-@app.route("/user") #Use Flask's app.route decorator to map the URL route /users to the function get_all. 
+@app.route("/user") #Use Flask's app.route decorator to .map the URL route /users to the function get_all. 
 def get_all():
-	return 'user api endpoint'
-	# return jsonify({"users": [users.json() for users in User.query.all()]})
+	#return 'user api endpoint'
+	return jsonify({"users": [users.json() for users in User.query.all()]})
 
 @app.route("/user/<string:userID>") #Use Flask's app.route decorator to map the URL route /users/userID to the function find_by_isbn13. 
 #userID is a path variable of string type. 

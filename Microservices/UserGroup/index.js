@@ -21,8 +21,8 @@ const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
     dialect: 'mysql'
 })
 
-const host = 'host.docker.internal'
-// const host = 'localhost'
+// const host = 'host.docker.internal'
+const host = 'localhost'
 
 const UserGrpOuting = sequelize.define('UserGrpOuting', {
     
@@ -84,26 +84,31 @@ app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
             GrpOutingID: gid
         }
     }).then((groupUsers) => {
-        console.log(groupUsers)
+        // console.log(groupUsers)
 
         var users = [];
 
         usersProcessed = 0;
 
-        groupUsers.forEach(user => {
-            request('http://'+host+':3001/user/' + user.UserID, { json: true }, (err, response, u) => {
-                if (err) { 
-                    return res.send(err); 
-                }
-                
-                users.push(u)
-                usersProcessed++
+        if(groupUsers.length != 0){
 
-                if(usersProcessed == groupUsers.length) {
-                    return res.send(users)
-                }
-            });
-        })
+            groupUsers.forEach(user => {
+                request('http://'+host+':3001/user/' + user.UserID, { json: true }, (err, response, u) => {
+                    if (err) { 
+                        return res.send(err); 
+                    }
+                    
+                    users.push(u)
+                    usersProcessed++
+
+                    if(usersProcessed == groupUsers.length) {
+                        return res.send(users)
+                    }
+                });
+            })
+        } else {
+            return res.send("No users found for group id: " + gid)
+        }   
     })
 })
 
@@ -117,28 +122,32 @@ app.get("/UserGrpOuting/user/:id", (req, res) => {
         }
     }).then((UserGrpOutings) => {
 
-        // console.log(UserGrpOutings)
+        console.log(UserGrpOutings.length)
 
         var groups = [];
 
         groupsProcessed = 0;
 
-        UserGrpOutings.forEach(group => {
+        if(UserGrpOutings.length != 0){
+            UserGrpOutings.forEach(group => {
 
-            console.log(group.GrpOutingID)
-            request('http://'+host+':3002/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
-                if (err) { 
-                    return res.send(err); 
-                }
-
-                groups.push(g)
-                groupsProcessed++
-
-                if(groupsProcessed == UserGrpOutings.length) {
-                    return res.send(groups)
-                }
-            });
-        })
+                // console.log(group.GrpOutingID)
+                request('http://'+host+':3002/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
+                    if (err) { 
+                        return res.send(err); 
+                    }
+    
+                    groups.push(g)
+                    groupsProcessed++
+    
+                    if(groupsProcessed == UserGrpOutings.length) {
+                        return res.send(groups)
+                    }
+                });
+            })
+        } else {
+            return res.send("No Groups found for user id: " + uid)
+        }   
         
     })
 })
