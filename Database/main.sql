@@ -16,9 +16,9 @@ VALUES("HongHong", "HongRen", "user1.esd@gmail.com", "HongRen123");
 INSERT INTO User
 VALUES("Hardy", "Hardyanto", "user2.esd@gmail.com", "Hardy123");
 INSERT INTO User
-VALUES("Ramly", "Ram", "wei.minn.2018@sis.smu.edu.sg", "Ram123");
+VALUES("Marcie", "Amanda", "user3.esd@gmail.com", "Amanda123");
 INSERT INTO User
-VALUES("Marcie", "Amanda", "wei.minn.2018@sis.smu.edu.sg", "Amanda123");
+VALUES("Ramly", "Ram", "user4.esd@gmail.com", "Ram123");
 
 DROP DATABASE IF EXISTS GrpOuting;
 CREATE DATABASE GrpOuting;
@@ -111,5 +111,5 @@ create table GrpOuting
 			CONSTRAINT SETTLEMENT_PK PRIMARY KEY (UserID, InvoiceID)
 		);
 
-		INSERT INTO Settlement
-		VALUES("HongHong", "1", "T123", "2017-06-16 09:34:21");
+		-- INSERT INTO Settlement
+		-- VALUES("HongHong", "1", "T123", "2017-06-16 09:34:21");

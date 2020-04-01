@@ -121,4 +121,17 @@ app.get("/settlement/user/:uid/invoice/:iid", (req, res) => {
     })
 })
 
+app.get("/settlement/invoice/:iid", (req, res) => {
+
+    const iid = req.params.iid
+
+    Settlement.findAll({
+        where: {
+            InvoiceId: iid
+        }
+    }).then((settlements) => {
+        res.send(settlements)
+    })
+})
+
 app.listen(3005, () =>  console.log('Express server is running at port no: 3005'));

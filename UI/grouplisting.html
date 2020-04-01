@@ -126,8 +126,9 @@
             var url = "group.html?grpOutingID=" + group.GrpOutingID
             var html = '<div class="card container-fluid " style="width:95%">'
             html += '<div class="card-body  justify-content-md-center">'
-            html += '<h5 class="card-title">' + groupinfo.Description + '</h5>'//' + group.GrpOutingID + ' : 
+            html += '<h5 class="card-title">' + groupinfo.Description + '</h5>'
             html += '<h6 class="card-subtitle mb-2 text-muted">Created By: ' + groupinfo.CreatedBy + '</h6>'
+            html += '<h7 class="card-subtitle mb-2 text-muted">Group Outing ID: ' + groupinfo.GrpOutingID + '</h7>'
             html += '<p class="card-text">Number Of Invoices: ' + count + '</p>'
             html += '<a href="' + url + '"class="card-link">See More</a>'
             html += ' </div>'

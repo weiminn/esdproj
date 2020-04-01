@@ -81,94 +81,100 @@
 
       $(async () => {
 
-        try {
-          const information = await fetch(
-            "http://localhost:3002/grpouting/" + grpid, { method: 'GET' }
-          );
-          const info = await information.json();
-          groupinfo = info;
-          console.log(groupinfo)
-          $("#groups").html(groupinfo.Description)
-        } catch{
-          showError('There is a problem retrieving  data, please try again later.<br />' + error);
-        }
-
-        function showError(message) {
-          // Display an error under the main container
-          $('#user')
-            .append("<label>" + message + "</label>");
-        }
+        const information = await fetch(
+          "http://localhost:3002/grpouting/" + grpid, { method: 'GET' }
+        );
+        const info = await information.json();
+        groupinfo = info;
+        console.log(groupinfo)
+        $("#groups").html(groupinfo.Description)
 
         var u = $('#user').val();
 
-        var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
-        // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
+        //get invoices for this user in the group
+        const response = await fetch(
+          "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid, //"http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
+          { method: 'GET' }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          console.log(data)
+        }
 
-        try {
-          const response = await fetch(
-            serviceURL, { method: 'GET' }
+        var invoices = data;
+
+        for (const invoice of invoices) {
+
+          var status;
+          var isOwner = false
+
+          //chef if the user owns invoice
+          const oResponse = await fetch(
+            "http://localhost:3004/invoice/" + invoice.InvoiceID + "/owner/",
+            { method: 'GET' }
           );
-          const data = await response.json();
-          if (response.ok) {
-            // console.log(data)
-            console.log(data)
+          const owner = await oResponse.json()
+          if(owner.UserID == userid) {
+            isOwner = true
+            console.log(isOwner)
           }
 
-          var invoices = data;
+          var url = "invoice_details.html?invoiceID=" + invoice.InvoiceID
+          var url2 = "payment.html?invoiceID=" + invoice.InvoiceID
+          var html = '<div class="card container-fluid " style="width:95%">'
+          html += '<div class="card-body  justify-content-md-center">'
+          html += '<h5 class="card-title">' + invoice.Title + '</h5>'// : ' + invoice.InvoiceID + '
+          html += '<h6 class="card-subtitle mb-2 text-muted">Description: ' + invoice.Description + '</h6>'
+          html += '<p class="card-text">Total Amount: $' + invoice.Amount + '</p>'
 
+          if (isOwner) {
+            html += '<h6 class="card-text">Created by you</h6>'
 
-          for (const invoice of invoices) {
+            //get users for the invoice
+            const uresponse = await fetch(
+              "http://localhost:3004/invoice/" + invoice.InvoiceID + "/users",
+              { method: 'GET' }
+            );
+            invoiceUsers = await uresponse.json();
 
-            var status;
-            var settlement;
-            var transactionID;
+            //get settlements of invoice
+            const sresponse = await fetch(
+              "http://localhost:3005/settlement/invoice/"+ invoice.InvoiceID , 
+            );
+            invoiceSettlements = await sresponse.json();
+            
+            console.log(invoiceSettlements.length)
+            console.log(invoiceUsers.NumberOfUsers)
 
-            try {
-              var serviceURL2 ="http://localhost:3005/settlement/user/" + userid + "/invoice/"+ invoice.InvoiceID 
-              // var serviceURL2 = "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID
-
-              const response = await fetch(
-                serviceURL2, { method: 'GET' }
-              );
-              status = await response.json();
-
-              console.log(status)
-              if (status.length == 0) {
-                settlement = "Not Settled";
-              } else {
-                settlement = "Settled"
-              }
-
-            } catch (error) {
-              showError('There is a problem retrieving data, please try again later.<br />' + error);
+            //check if it has been totally settled
+            if(invoiceSettlements.length == (invoiceUsers.NumberOfUsers - 1)){
+              html += '<h6 class="card-text">Invoice Fully Settled</h6>'
+            }else {
+              html += '<p class="card-text">Invoice Not Settled by your friends</p>'
             }
-            var url = "invoice_details.html?invoiceID=" + invoice.InvoiceID
-            var url2 = "payment.html?invoiceID=" + invoice.InvoiceID
-            var html = '<div class="card container-fluid " style="width:95%">'
-            html += '<div class="card-body  justify-content-md-center">'
-            html += '<h5 class="card-title">' + invoice.InvoiceID + ' : ' + invoice.Title + '</h5>'
-            html += '<h6 class="card-subtitle mb-2 text-muted">Description: ' + invoice.Description + '</h6>'
-            html += '<p class="card-text">Total Amount: $' + invoice.Amount + '</p>'
-            html += '<p class="card-text">Status: ' + settlement + '</p>'
-            // html += '<a href="' + url + '"class="card-link">Invoice Detail</a>'
 
-            if (status.length != 0) {
+          }else {
+            //check if settled by user
+            const response = await fetch(
+              "http://localhost:3005/settlement/user/" + userid + "/invoice/"+ invoice.InvoiceID , //"http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID
+              { method: 'GET' }
+            );
+            status = await response.json();
+
+            console.log(status)
+            if (status.length == 0) {
+              html += '<p class="card-text">Status: Not Settled</p>'
+              html += '<a href="'+url2+'" class="btn btn-lg btn-block btn-primary">Pay</a>'   
+            } else {
               html += '<p class="card-text">Transation ID: ' + status[0].TransactionID + '</p>'
             }
-
-            html += '<a href="'+url2+'" class="btn btn-lg btn-block btn-primary">Pay</a>'
-            html += ' </div>'
-            html += ' </div>'
-            html += ' </div>';
-            $('#printcard').append(html);
           }
-        } catch (error) {
-          // Errors when calling the service; such as network error, 
-          // service offline, etc
-          showError
-            ('There is a problem retrieving  data, please try again later.<br />' + error);
-
-        } // error
+        
+          html += ' </div>'
+          html += ' </div>'
+          html += ' </div>';
+          $('#printcard').append(html);
+        }
 
       });
     }, 750);
