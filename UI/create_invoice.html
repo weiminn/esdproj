@@ -189,9 +189,8 @@
       var amount = $('#invoice_amount').val();
       var description = $('#invoice_description').val();
 
-      //var users = [{"UserID": "123abc","Owner":true }, {"UserID": "456abc", "Owner": false}]
-      var serviceURL = "http://localhost:3004/invoice"
-      //var serviceURL = "http://52.76.30.61:8000/api/v1/invoice";
+      // var serviceURL = "http://localhost:3004/invoice"
+      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice";
 
       var data = new FormData()
       data.append('File', selectedFile);
