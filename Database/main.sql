@@ -26,11 +26,15 @@ Use GrpOuting;
 
 create table GrpOuting
 (
-	GrpOutingID INT NOT NULL AUTO_INCREMENT,
-	CreatedBy varchar (100) NOT NULL,
+	GrpOutingID INT NOT NULL
+	AUTO_INCREMENT,
+	CreatedBy varchar
+	(100) NOT NULL,
 	GrpDateTime DATETIME NOT null,
-	Description VARCHAR(100) null,
-	constraint GrpOuting primary key (GrpOutingID)
+	Description VARCHAR
+	(100) null,
+	constraint GrpOuting primary key
+	(GrpOutingID)
 );
 
 	INSERT INTO GrpOuting
@@ -65,19 +69,25 @@ create table GrpOuting
 
 	create table Invoice
 	(
-		InvoiceID INT not null AUTO_INCREMENT,
+		InvoiceID INT not null
+		AUTO_INCREMENT,
 		InvoiceDateTime DATETIME not null,
-		Description VARCHAR (100) not null,
-		Title VARCHAR (100) not null,
-		Amount DECIMAL (6,2) not null,
+		Description VARCHAR
+		(100) not null,
+		Title VARCHAR
+		(100) not null,
+		Amount DECIMAL
+		(6,2) not null,
 		GrpOutingID INT not null,
-		PhotoLink VARCHAR (100),
-		CONSTRAINT INVOICE_PK PRIMARY KEY (InvoiceID)
+		PhotoLink VARCHAR
+		(100),
+		CONSTRAINT INVOICE_PK PRIMARY KEY
+		(InvoiceID)
 	);
 
-		INSERT INTO Invoice
-			(InvoiceDateTime, Description, Title, Amount, GrpOutingID)
-		VALUES("2017-06-15 09:34:21", "Plus theatre", "Movie Outing", 200, 1);
+		-- INSERT INTO Invoice
+		-- 	(InvoiceDateTime, Description, Title, Amount, GrpOutingID)
+		-- VALUES("2017-06-15 09:34:21", "Plus theatre", "Movie Outing", 200, 1);
 		-- INSERT INTO Invoice
 		-- 	(InvoiceDateTime, Description, Title, Amount, GrpOutingID)
 		-- VALUES("2019-06-15 09:34:21", "Seafood at Hotel", "Dinner Outing", 300, 1);
@@ -90,10 +100,10 @@ create table GrpOuting
 			CONSTRAINT UserInvoice_PK PRIMARY KEY (UserID, InvoiceID)
 		);
 
-		INSERT INTO UserInvoice
-		VALUES("HongHong", 1, 1);
-		INSERT INTO UserInvoice
-		VALUES("Hardy", 1, 0);
+		-- INSERT INTO UserInvoice
+		-- VALUES("HongHong", 1, 1);
+		-- INSERT INTO UserInvoice
+		-- VALUES("Hardy", 1, 0);
 
 		-- INSERT INTO UserInvoice
 		-- VALUES("Hardy", 2, 1);

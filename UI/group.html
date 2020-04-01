@@ -69,6 +69,7 @@
 
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
   <script>
     setTimeout( async() => {
       var userid = localStorage.getItem("userid");
@@ -78,6 +79,13 @@
       const urlParams = new URLSearchParams(queryString);
       const grpid = urlParams.get('grpOutingID')
       localStorage.setItem("grpOutingID", grpid)
+
+      var config = {
+        apiKey: "AIzaSyC2FjP9xCr8KWsCo7NR0K2Ldv3PkNNClv4 ",
+        projectId: "esdproj-1d7cf",
+        storageBucket: "gs://esdproj-1d7cf.appspot.com/"
+      };
+      firebase.initializeApp(config);
 
       $(async () => {
 
@@ -126,6 +134,19 @@
           html += '<h5 class="card-title">' + invoice.Title + '</h5>'// : ' + invoice.InvoiceID + '
           html += '<h6 class="card-subtitle mb-2 text-muted">Description: ' + invoice.Description + '</h6>'
           html += '<p class="card-text">Total Amount: $' + invoice.Amount + '</p>'
+  
+          const imgID = 'displayImg' + invoice.InvoiceID;
+          html += '<img class="rounded mx-auto d-block" id="' + imgID + '" />'
+
+          //retrieve image          
+          var file = firebase.storage().ref(invoice.PhotoLink)
+      
+          file.getDownloadURL().then((url) => {
+            $('#' + imgID).attr('src', url)
+                .width(150)
+                .height(200);
+            console.log(url)
+          })
 
           if (isOwner) {
             html += '<h6 class="card-text">Created by you</h6>'
@@ -173,6 +194,7 @@
           html += ' </div>'
           html += ' </div>'
           html += ' </div>';
+          // html += ' <br>';
           $('#printcard').append(html);
         }
 
