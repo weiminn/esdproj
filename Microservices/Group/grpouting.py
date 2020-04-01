@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 # from os import environ
 
+from datetime import datetime
+
 app = Flask(__name__) #Import Flask and initialize a Flask application.
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/grpouting'
@@ -20,9 +22,16 @@ class Group(db.Model):
 
 	grpOutingID = db.Column(db.Integer(), primary_key=True)
 	createdBy = db.Column(db.String(100), nullable=False)
+	description = db.Column(db.String(100), nullable=True)
+	grpDateTime = db.Column(db.DateTime(), nullable=False, default=datetime.utcnow)
 
 	def json(self):
-		return {"GrpOutingID": self.grpOutingID, "CreatedBy": self.createdBy}
+		return {
+			"GrpOutingID": self.grpOutingID, 
+			"CreatedBy": self.createdBy,
+			"Description": self.description,
+			"GroupDateTime": self.grpDateTime
+		}
 
 
 # @app.route("/grpouting") #Use Flask's app.route decorator to map the URL route /groups to the function get_all. 
@@ -49,7 +58,7 @@ def create_group():#grpOutingID
 	data = request.get_json()
 	print("Data received")
 	print(data)
-	group = Group(createdBy=data['CreatedBy'])
+	group = Group(createdBy=data['CreatedBy'], description=data['Description'])
 
 	try:
 		db.session.add(group)

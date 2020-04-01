@@ -46,9 +46,11 @@ const UserGrpOuting = sequelize.define('UserGrpOuting', {
 
 app.post("/UserGrpOuting/create", (req, res) => {
 
-    // console.log(req.body)
+    console.log("request body:")
+    console.log(req.body)
     axios.post('http://'+host+':3002/grpouting', {
-        "CreatedBy": req.body.CreatedBy
+        "CreatedBy": req.body.CreatedBy,
+        "Description": req.body.Description
     })
     .then((response) => {
         // console.log(`statusCode: ${response.statusCode}`)
@@ -56,7 +58,7 @@ app.post("/UserGrpOuting/create", (req, res) => {
         UserGrpOuting.create(
             {
                 "UserID": response.data.CreatedBy,
-                "GrpOutingID": response.data.GrpOutingID
+                "GrpOutingID": response.data.GrpOutingID,
             }
         ).then(result => {
             res.send(result)
