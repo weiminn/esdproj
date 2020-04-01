@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__) #Import Flask and initialize a Flask application.
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:asdf1234@esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com:3306/User'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://admin:asdf1234@esdb.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com:3306/User'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 # print(environ.get('dbURL'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -17,7 +17,7 @@ app.use(bodyparser.json())
 
 const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
     // host: process.env.dbHOST,//'localhost',
-    host: "esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
+    host: "esdb.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
 
