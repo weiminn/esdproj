@@ -16,9 +16,9 @@ VALUES("HongHong", "HongRen", "user1.esd@gmail.com", "HongRen123");
 INSERT INTO User
 VALUES("Hardy", "Hardyanto", "user2.esd@gmail.com", "Hardy123");
 INSERT INTO User
-VALUES("Marcie", "Amanda", "user3.esd@gmail.com", "Amanda123");
+VALUES("Marcie", "Amanda", "user5.esd@gmail.com", "Amanda123");
 INSERT INTO User
-VALUES("Ramly", "Ram", "user4.esd@gmail.com", "Ram123");
+VALUES("Ramly", "Ram", "user6.esd@gmail.com", "Ram123");
 
 DROP DATABASE IF EXISTS GrpOuting;
 CREATE DATABASE GrpOuting;
@@ -37,12 +37,12 @@ create table GrpOuting
 	(GrpOutingID)
 );
 
-	INSERT INTO GrpOuting
-		(CreatedBy, GrpDateTime, Description)
-	VALUES("HongHong", "2017-06-15 09:34:21", "Day out with Fwends");
-	INSERT INTO GrpOuting
-		(CreatedBy, GrpDateTime, Description)
-	VALUES("Hardy", "2017-06-15 09:34:21", "Night out with Bros");
+	-- INSERT INTO GrpOuting
+	-- 	(CreatedBy, GrpDateTime, Description)
+	-- VALUES("HongHong", "2017-06-15 09:34:21", "Day out with Fwends");
+	-- INSERT INTO GrpOuting
+	-- 	(CreatedBy, GrpDateTime, Description)
+	-- VALUES("Hardy", "2017-06-15 09:34:21", "Night out with Bros");
 
 	DROP DATABASE IF EXISTS UserGrpOuting;
 	CREATE DATABASE UserGrpOuting;
@@ -56,12 +56,12 @@ create table GrpOuting
 	);
 
 
-	INSERT INTO UserGrpOuting
-	VALUES("HongHong", "1");
-	INSERT INTO UserGrpOuting
-	VALUES("Hardy", "1");
-	INSERT INTO UserGrpOuting
-	VALUES("HongHong", "2");
+	-- INSERT INTO UserGrpOuting
+	-- VALUES("HongHong", "1");
+	-- INSERT INTO UserGrpOuting
+	-- VALUES("Hardy", "1");
+	-- INSERT INTO UserGrpOuting
+	-- VALUES("HongHong", "2");
 
 	DROP DATABASE IF EXISTS Invoice;
 	CREATE DATABASE Invoice;

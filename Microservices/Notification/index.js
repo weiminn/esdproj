@@ -37,7 +37,10 @@ const mail = (toEmail, subject, cont) => {
         text: cont
     }, (err, info) => {
         if(err) {console.log(err)}
-        else {console.log("email sent")}
+        else {
+            console.log("email sent")
+            console.log(info)
+        }
     })
 }
 
@@ -70,7 +73,8 @@ amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudam
                                                 const invoiceName = iresponse.body.Title
                                                 const invoiceTransaction = msg.TransactionID
                                                 
-                                                mail(email, "Invoice Paid For", "Dear " + username + 
+                                                console.log("Sending email to " + email)
+                                                mail(email, "Invoice Paid", "Dear " + username + 
                                                 ", \n\nYou have paid for '" + invoiceName + "' via Transaction: " + invoiceTransaction)
                                                 
                                                 //request.get('http://' + invoiceHost + ':5100/invoice/' + iresponse.body.InvoiceID + '/owner' , { json: true }, (err, oresponse, ob) => {
@@ -79,6 +83,7 @@ amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudam
                                                     const ownername = oresponse.body.Username
                                                     const oemail = oresponse.body.Email
 
+                                                    console.log("Sending email to " + oemail)
                                                     mail(oemail, "Your Invoice Settled", 
                                                     "Dear " + ownername + 
                                                     ", \n\nYour invoice, '" + invoiceName + "', has been settled by " + username + " via Transaction: " + invoiceTransaction)

@@ -62,6 +62,7 @@
 
     <div class="card-body">
       <form action="grouplisting.html">
+        <!--  -->
         <div class="form-group">
           <label for="group_desc">Group Description</label>
           <input type="group_desc" class="form-control" id="group_desc" aria-describedby="groupHelp"
@@ -106,8 +107,8 @@
 
       var owner = userid
       var desc = $("#group_desc").val()
-      // var serviceURL = "http://localhost:3003/UserGrpOuting/create"
-      var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/create";
+      var serviceURL = "http://localhost:3003/UserGrpOuting/create"
+      // var serviceURL = "http://52.76.30.61:8000/api/v1/usergrpouting/create";
 
       var requestBody = {
         CreatedBy: owner,
@@ -115,6 +116,23 @@
       };
 
       postData(serviceURL, requestBody);
+      
+
+      // fetch(serviceURL, {
+      //   method: 'POST', // or 'PUT'
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'mode': 'cors',
+      //   },
+      //   body: JSON.stringify(requestBody),
+      // })
+      // .then((response) => response.json())
+      // .then((data) => {
+      //   console.log('Success:', data);
+      // })
+      // .catch((error) => {
+      //   console.error('Error:', error);
+      // });
 
     });
 
