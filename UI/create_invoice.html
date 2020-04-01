@@ -76,9 +76,21 @@
           </div>
         </div>
         <div class="form-group row">
+          <label for="invoiceDescription" class="col-sm-3 col-form-label">Date</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="invoice_description" placeholder="Enter Date">
+          </div>
+        </div>
+        <div class="form-group row">
           <label for="invoiceDescription" class="col-sm-3 col-form-label">Description</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" id="invoice_description" placeholder="Enter Description">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="members" class="col-sm-3 col-form-label">Members</label>
+          <div class="col-sm-9">
+            <div id="members_chklist"></div>
           </div>
         </div>
         <div class="form-group row">
@@ -98,8 +110,44 @@
   <script>   
 
     var grpid = localStorage.getItem("grpOutingID");
-    console.log(grpid)
+    //console.log(grpid)
     var userid = localStorage.getItem("userid");
+    $(async () => {
+      // Change serviceURL to your own
+      var serviceURL = "http://localhost:3003/usergrpouting/grpouting/" + grpid;
+      function showError(message) {
+        // Display an error under the main container
+        $('#user')
+          .append("<label>" + message + "</label>");
+      }
+      try {
+        const response = await fetch(
+          serviceURL, { method: 'GET' }
+        );
+        const members = await response.json();
+        //console.log(members)
+        // for loop to setup all table rows with obtained book data
+        var rows = "";
+        for (const member of members) {
+          if( member.UserID != userid){
+            eachMember = '<input type="checkbox" id="members" name="grpMembers" value="' + member.UserID + '">';
+            eachMember += '<label for="members">' + member.Username + '</label><br>'
+          }
+          else{
+            continue
+          }
+          // add all the rows to the table
+          $('#members_chklist').append(eachMember);
+        }
+
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        showError
+          ('There is a problem retrieving books data, please try again later.<br />' + error);
+
+      } // error
+    });
     async function postData(serviceURL, requestBody) {
       var requestParam = {
         method: 'POST', body: requestBody
@@ -108,8 +156,8 @@
 
         const response = await fetch(serviceURL, requestParam);
         data = await response.json();
-        if (response.ok){
-          
+        if (response.ok) {
+
         }
       } catch (error) {
         //console.error(error);
@@ -117,44 +165,23 @@
     }
 
 
+
+
     //console.log(grpid)
-    // anonymous async function 
+    // anonymous async function
     // - using await requires the function that calls it to be async
     $("#createinvoicebtn").click(async (event) => {
+      user_list =[]
+      user_list.push({"UserID":userid,"Owner":true})
       event.preventDefault();
-
-
-     var serviceURL = "http://localhost:3003/usergrpouting/grpouting/" + grpid;
-     // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/"+grpid;
-
-      //var users = [{ "UserID": "123abc" }, { "UserID": "456abc" }]
-      var user_list = []
-      try {
-        const response = await fetch(
-          serviceURL, { method: 'GET' }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          // console.log(data)
-          
+      var memberschkbox = document.getElementsByName("grpMembers")
+      console.log(memberschkbox)
+      for(const chk of memberschkbox){
+        if(chk.checked == true){
+          user_list.push({"UserID":chk.value,"Owner":false})
         }
-
-        var users1 = data;
-
-      
-        for (const user of users1) {
-            
-          if( user.UserID == userid){
-            console.log(user.UserID)
-            user_list.push({"UserID":user.UserID,"Owner":true})
-          }else{
-            user_list.push({"UserID":user.UserID,"Owner":false})
-          }
-          console.log(user_list)
-        }
-      } catch{
-
       }
+
       // Change serviceURL to your own
       const selectedFile = $('#input').prop('files')[0]
       //console.log(selectedFile)
@@ -162,9 +189,9 @@
       var amount = $('#invoice_amount').val();
       var description = $('#invoice_description').val();
 
-      //var users = [{ "UserID": "123abc","Owner":true }, { "UserID": "456abc", "Owner": false}]
+      //var users = [{"UserID": "123abc","Owner":true }, {"UserID": "456abc", "Owner": false}]
       var serviceURL = "http://localhost:3004/invoice"
-       //var serviceURL = "http://52.76.30.61:8000/api/v1/invoice"; 
+      //var serviceURL = "http://52.76.30.61:8000/api/v1/invoice";
 
       var data = new FormData()
       data.append('File', selectedFile);
