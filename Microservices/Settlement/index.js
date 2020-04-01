@@ -23,6 +23,7 @@ app.use(bodyparser.urlencoded({ extended: true }))
 app.use(bodyparser.json())
 
 // const host = 'host.docker.internal'
+//const invoiceHost = '18.139.154.66'
 const host = 'localhost'
 
 const Settlement = sequelize.define('Settlement', 
@@ -60,6 +61,7 @@ app.post("/settlement", (req, res) => {
         // console.log(result)
         res.json(result)
 
+        //request.get('http://' + invoiceHost + ':5100/invoice/' + req.body.InvoiceID + '/owner' , { json: true }, (err, response, body) => {
         request.get('http://' + host + ':3004/invoice/' + req.body.InvoiceID + '/owner' , { json: true }, (err, response, body) => {
             console.log(response.body)
             PO.payout(response.body.Email, req.body.Amount, req.body.TransactionID)

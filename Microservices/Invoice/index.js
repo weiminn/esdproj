@@ -41,8 +41,8 @@ const sequelize = new Sequelize('Invoice', 'admin', 'asdf1234', {
 })
 
 // const host = 'host.docker.internal'
-// const userHost = '13.228.102.119'
-const userHost = "localhost"
+//const userHost = '13.228.102.119'
+const host = "localhost"
 
 const Invoice = sequelize.define(
     'Invoice', 
@@ -193,7 +193,9 @@ app.get("/invoice/:id/owner", (req, res) => {
                 }
             ).then((userInvoice) => {
                 console.log(userInvoice[0].UserID)
-                request('http://'+userHost+':3001/user/' + userInvoice[0].UserID, { json: true }, (e,r,b) => {
+
+                //request('http://'+userHost+':5100/user/' + userInvoice[0].UserID, { json: true }, (e,r,b) => {
+                request('http://'+host+':3001/user/' + userInvoice[0].UserID, { json: true }, (e,r,b) => {
                     if (e)
                         return res.send(e)
                     return res.send(b)

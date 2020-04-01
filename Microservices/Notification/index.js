@@ -1,13 +1,13 @@
-const express = require('express');
-var app = express();
-const bodyparser = require('body-parser')
-const Sequelize = require('sequelize')
+// const express = require('express');
+// var app = express();
+// const bodyparser = require('body-parser')
+// const Sequelize = require('sequelize')
 const request = require('request')
 const nodemailer = require('nodemailer')
 const amqp = require('amqplib/callback_api')
-const cors = require('cors')
+// const cors = require('cors')
  
-app.use(cors())
+// app.use(cors())
 // const sequelize = new Sequelize('book', 'root', '', {
 //     host: 'localhost',
 //     dialect: 'mysql'
@@ -23,7 +23,9 @@ let transport = nodemailer.createTransport({
 });
 
 //const host = 'host.docker.internal'
- const host = 'localhost'
+//const invoiceHost = '18.139.154.66'
+//const userHost    = '13.228.102.119'
+const host = 'localhost'
 
 const mail = (toEmail, subject, cont) => {
 
@@ -56,9 +58,12 @@ amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudam
                                     (msg) => {
                                         msg = JSON.parse(msg.content)
 
+                                        //request.get('http://' + userHost + ':5100/user/' + msg.UserID, { json: true }, (err, uresponse) => {
                                         request.get('http://' + host + ':3001/user/' + msg.UserID, { json: true }, (err, uresponse) => {
                                             console.log(uresponse.body)
                                             const email = uresponse.body.Email
+
+                                            //request.get('http://' + invoiceHost + ':5100/invoice/' + msg.InvoiceID, { json: true }, (err, iresponse) => {
                                             request.get('http://' + host + ':3004/invoice/' + msg.InvoiceID, { json: true }, (err, iresponse) => {
                                                 console.log(iresponse.body)
                                                 const username = uresponse.body.Username
@@ -67,7 +72,8 @@ amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudam
                                                 
                                                 mail(email, "Invoice Paid For", "Dear " + username + 
                                                 ", \n\nYou have paid for '" + invoiceName + "' via Transaction: " + invoiceTransaction)
-
+                                                
+                                                //request.get('http://' + invoiceHost + ':5100/invoice/' + iresponse.body.InvoiceID + '/owner' , { json: true }, (err, oresponse, ob) => {
                                                 request.get('http://' + host + ':3004/invoice/' + iresponse.body.InvoiceID + '/owner' , { json: true }, (err, oresponse, ob) => {
                                                     console.log(ob)
                                                     const ownername = oresponse.body.Username

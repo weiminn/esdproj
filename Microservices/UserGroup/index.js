@@ -22,6 +22,8 @@ const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
 })
 
 // const host = 'host.docker.internal'
+//const userHost        = '13.228.102.119'
+//const groupOutingHost = '18.136.144.202'
 const host = 'localhost'
 
 const UserGrpOuting = sequelize.define('UserGrpOuting', {
@@ -48,6 +50,7 @@ app.post("/UserGrpOuting/create", (req, res) => {
 
     console.log("request body:")
     console.log(req.body)
+    //axios.post('http://'+groupOutingHost+':5100/grpouting', {
     axios.post('http://'+host+':3002/grpouting', {
         "CreatedBy": req.body.CreatedBy,
         "Description": req.body.Description
@@ -95,6 +98,7 @@ app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
         if(groupUsers.length != 0){
 
             groupUsers.forEach(user => {
+                //request('http://'+userHost+':5100/user/' + user.UserID, { json: true }, (err, response, u) => {
                 request('http://'+host+':3001/user/' + user.UserID, { json: true }, (err, response, u) => {
                     if (err) { 
                         return res.send(err); 
@@ -134,6 +138,7 @@ app.get("/UserGrpOuting/user/:id", (req, res) => {
             UserGrpOutings.forEach(group => {
 
                 // console.log(group.GrpOutingID)
+                //request('http://'+groupOutingHost+':5100/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
                 request('http://'+host+':3002/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
                     if (err) { 
                         return res.send(err); 
