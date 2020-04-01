@@ -35,7 +35,7 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">O$P$</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -83,66 +83,68 @@
       var serviceURL = "http://localhost:3003/usergrpouting/user/" + userid
       // var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/user/" + userid;
      
+      setTimeout(async () => {
+        try {
+          const response = await fetch(
+            serviceURL, { method: 'GET' }
+          );
+          const data = await response.json();
 
-      try {
-        const response = await fetch(
-          serviceURL, { method: 'GET' }
-        );
-        const data = await response.json();
+          var groups = data;
+          console.log(groups)
 
-        var groups = data;
-        console.log(groups)
+          for (const group of groups) {
+            var groupinfo = null;
+            var count = 0;
+          
+            var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
+            // var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
+            var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
+            // var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID //+ "/user/" + userid
+            try {
+              const information = await fetch(
+                serviceURL2, { method: 'GET' }
+              );
+              const info = await information.json();
+              groupinfo = info;
+            } catch{
+              showError('There is a problem retrieving  data, please try again later.<br />' + error);
+            }
 
-        for (const group of groups) {
-          var groupinfo = null;
-          var count = 0;
-         
-          var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
-          // var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
-          var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
-          // var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID //+ "/user/" + userid
-          try {
-            const information = await fetch(
-              serviceURL2, { method: 'GET' }
-            );
-            const info = await information.json();
-            groupinfo = info;
-          } catch{
-            showError('There is a problem retrieving  data, please try again later.<br />' + error);
+
+            try {
+
+              const invoices = await fetch(
+                serviceURL3, { method: 'GET' }
+              );
+              const invoice = await invoices.json();
+              count = invoice.length;
+              console.log(count)
+            } catch{
+              showError('There is a problem retrieving  data, please try again later.<br />' + error);
+            }
+            var url = "group.html?grpOutingID=" + group.GrpOutingID
+            var html = '<div class="card container-fluid " style="width:95%">'
+            html += '<div class="card-body  justify-content-md-center">'
+            html += '<h5 class="card-title">' + groupinfo.Description + '</h5>'//' + group.GrpOutingID + ' : 
+            html += '<h6 class="card-subtitle mb-2 text-muted">Created By: ' + groupinfo.CreatedBy + '</h6>'
+            html += '<p class="card-text">Number Of Invoices: ' + count + '</p>'
+            html += '<a href="' + url + '"class="card-link">See More</a>'
+            html += ' </div>'
+            html += ' </div>'
+            html += ' </div>';
+            $('#printcard').append(html);
           }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          showError
+            ('There is a problem retrieving  data, please try again later.<br />' + error);
 
-
-          try {
-
-            const invoices = await fetch(
-              serviceURL3, { method: 'GET' }
-            );
-            const invoice = await invoices.json();
-            count = invoice.length;
-            console.log(count)
-          } catch{
-            showError('There is a problem retrieving  data, please try again later.<br />' + error);
-          }
-          var url = "group.html?grpOutingID=" + group.GrpOutingID
-          var html = '<div class="card container-fluid " style="width:95%">'
-          html += '<div class="card-body  justify-content-md-center">'
-          html += '<h5 class="card-title">' + groupinfo.Description + '</h5>'//' + group.GrpOutingID + ' : 
-          html += '<h6 class="card-subtitle mb-2 text-muted">Created By: ' + groupinfo.CreatedBy + '</h6>'
-          html += '<p class="card-text">Number Of Invoices: ' + count + '</p>'
-          html += '<a href="' + url + '"class="card-link">See More</a>'
-          html += ' </div>'
-          html += ' </div>'
-          html += ' </div>';
-          $('#printcard').append(html);
-        }
-      } catch (error) {
-        // Errors when calling the service; such as network error, 
-        // service offline, etc
-        showError
-          ('There is a problem retrieving  data, please try again later.<br />' + error);
-
-      } // error
-
+        } // error
+      }, 850)
+      
+ 
     });
   </script>
 </body>
