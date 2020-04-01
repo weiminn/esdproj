@@ -172,9 +172,9 @@ app.get("/invoice/:id", (req, res) => {
 
     Invoice.findByPk(iid).then((invoice) => {
         if(invoice)
-            return res.send(invoice)
+            res.send(invoice)
         else
-            return res.send("Invoice not found!")
+            res.send("Invoice not found!")
     })
 })
 
@@ -203,7 +203,9 @@ app.get("/invoice/:id/owner", (req, res) => {
             })
         } 
         else
-            {return res.send("Invoice not found!")}
+            {
+                res.send("Invoice not found!")
+            }
     })
 })
 
@@ -216,7 +218,7 @@ app.get("/invoice/grpouting/:id", (req, res) => {
             GrpOutingID: gid
         }
     }).then((invoices) => {
-        return res.send(invoices)        
+        res.send(invoices)        
     })
 })
 
@@ -232,18 +234,26 @@ app.get("/invoice/grpouting/:gid/user/:uid", (req, res) => {
             UserID: uid
         }
     }).then((userInvoices) => {
-        console.log("found: " + userInvoices.length)
-        userInvoices.forEach(userInvoice => {
-            Invoice.findByPk(userInvoice.InvoiceID).then((invoice) => {
-                invoices.push(invoice)
-                console.log(invoices)
-                if(invoices.length == userInvoices.length) {
-                    const toReturn = invoices.filter(inv => inv.GrpOutingID == gid)
-                    console.log(invoices.length + ": " + toReturn.length)
-                    return res.send(toReturn)
-                }
+        console.log(userInvoices)
+        if(userInvoices.length > 0) {
+            console.log("found: " + userInvoices.length)
+            userInvoices.forEach(userInvoice => {
+                Invoice.findByPk(userInvoice.InvoiceID).then((invoice) => {
+                    invoices.push(invoice)
+                    console.log(invoices)
+                    if(invoices.length == userInvoices.length) {
+                        const toReturn = invoices.filter(inv => inv.GrpOutingID == gid)
+                        console.log(invoices.length + ": " + toReturn.length)
+                        res.send(toReturn)
+                    }
+                })
+            })  
+        } else {
+            res.send({
+                "message" : "No user found!"
             })
-        })        
+        }
+              
     })
 })
 

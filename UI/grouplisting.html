@@ -97,10 +97,10 @@
             var groupinfo = null;
             var count = 0;
           
-            var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
-            // var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
-            var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
-            // var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID //+ "/user/" + userid
+            // var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
+            var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
+            // var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
+            var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid //+ "/user/" + userid
             try {
               const information = await fetch(
                 serviceURL2, { method: 'GET' }
