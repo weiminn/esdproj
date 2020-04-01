@@ -62,7 +62,7 @@ app.post("/settlement", (req, res) => {
 
         request.get('http://' + host + ':3004/invoice/' + req.body.InvoiceID + '/owner' , { json: true }, (err, response, body) => {
             console.log(response.body)
-            PO.payout(response.body.Email, req.body.Amount)
+            PO.payout(response.body.Email, req.body.Amount, req.body.TransactionID)
         })
 
         amqp.connect('amqp://salczyxm:Zm_ITWhakVCC00r91B_3018rPKHuJRyM@crane.rmq.cloudamqp.com/salczyxm', (err, conn) => {

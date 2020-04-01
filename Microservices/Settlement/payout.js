@@ -2,7 +2,7 @@
 var http = require("https");
 const request = require('request')
 
-module.exports.payout = (email, amount) => { // ('user1.esd@gmail.com', 100, aT)
+module.exports.payout = (email, amount, transID) => { // ('user1.esd@gmail.com', 100, aT)
     request.post('https://api.sandbox.paypal.com/v1/oauth2/token', {
         headers: {
             "authorization": "Basic QVdFQmR2TElNeUhmRVVoc0dXaWxUTXMyMGJiano1dHVKRmZwUVpTS1ZPYlBqb001anpiSTJaa3BMdnR4c1EwZnJTUjd5S2NxUjYzXzUweDg6RUlQMkZDTUR1ZlJDLS1hWGhEMjdSWWw3bW5GTmtkNkRBY3ZTWU01NkRRaUw4eU5JS2ZvMlBfU1lMMmhETmR3Z3VLSWV2c2lpMmx1NXdfSGk=",
@@ -22,12 +22,12 @@ module.exports.payout = (email, amount) => { // ('user1.esd@gmail.com', 100, aT)
             console.log(email)
             console.log(amount)
 
-            pO(email, amount, aT)
+            pO(email, amount, transID, aT)
     }})
 }
 
 
-const pO = (email, amount, aT) => {
+const pO = (email, amount, transID, aT) => {
     request.post('https://api.sandbox.paypal.com/v1/payments/payouts', {
         headers: {
             "accept": "application/json",
@@ -46,8 +46,8 @@ const pO = (email, amount, aT) => {
                         recipient_type: 'EMAIL',
                         amount: { value: amount, currency: 'SGD' },
                         receiver: email,
-                        note: 'Payouts sample transaction',
-                        sender_item_id: Math.random()
+                        note: "Sender's transation: " + transID,
+                        sender_item_id: transID
                     } 
                 ]
         })

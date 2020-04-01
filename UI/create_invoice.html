@@ -157,7 +157,7 @@
         const response = await fetch(serviceURL, requestParam);
         data = await response.json();
         if (response.ok) {
-
+          window.location.href = "group.html?grpOutingID="+grpid;
         }
       } catch (error) {
         //console.error(error);

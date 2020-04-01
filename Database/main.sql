@@ -77,10 +77,10 @@ create table GrpOuting
 
 		INSERT INTO Invoice
 			(InvoiceDateTime, Description, Title, Amount, GrpOutingID)
-		VALUES("2017-06-15 09:34:21", "Movie", "Movie Outing", 200, 1);
-		INSERT INTO Invoice
-			(InvoiceDateTime, Description, Title, Amount, GrpOutingID)
-		VALUES("2019-06-15 09:34:21", "Movie", "Movie Outing", 300, 1);
+		VALUES("2017-06-15 09:34:21", "Plus theatre", "Movie Outing", 200, 1);
+		-- INSERT INTO Invoice
+		-- 	(InvoiceDateTime, Description, Title, Amount, GrpOutingID)
+		-- VALUES("2019-06-15 09:34:21", "Seafood at Hotel", "Dinner Outing", 300, 1);
 
 		CREATE TABLE UserInvoice
 		(
@@ -93,7 +93,10 @@ create table GrpOuting
 		INSERT INTO UserInvoice
 		VALUES("HongHong", 1, 1);
 		INSERT INTO UserInvoice
-		VALUES("Hardy", 2, 1);
+		VALUES("Hardy", 1, 0);
+
+		-- INSERT INTO UserInvoice
+		-- VALUES("Hardy", 2, 1);
 
 		DROP DATABASE IF EXISTS Settlement;
 		CREATE DATABASE Settlement;

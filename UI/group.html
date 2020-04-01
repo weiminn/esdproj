@@ -60,111 +60,119 @@
     </div>
   </nav>
   <div class="container-fluid justify-content-md-center">
-    <h1 class="display-4 " id="groups"></h1>
+    <h1 class="display-6 " id="groups"></h1>
     <div class="row" id="printcard"></div>
     <div class='container-fluid' style="text-align: center;margin: 20px">
-      <a href="create_invoice.html" id="createinvoice" class="btn btn-primary"
-        style="width:150px;height: 50px;padding:10px">Create
-        Invoice</a>
+      <a href="create_invoice.html" id="createinvoice" class="btn btn-secondary"
+        style="width:150px;height: 50px;padding:10px">+</a>
     </div>
 
   </div>
 
   <script>
-    var userid = localStorage.getItem("userid");
-    localStorage.setItem("userid", userid);
+    setTimeout( async() => {
+      var userid = localStorage.getItem("userid");
+      localStorage.setItem("userid", userid);
 
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const grpid = urlParams.get('grpOutingID')
-    localStorage.setItem("grpOutingID", grpid)
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const grpid = urlParams.get('grpOutingID')
+      localStorage.setItem("grpOutingID", grpid)
 
-    $(async () => {
+      $(async () => {
 
-      try {
-        const information = await fetch(
-          "http://localhost:3002/grpouting/" + grpid, { method: 'GET' }
-        );
-        const info = await information.json();
-        groupinfo = info;
-        console.log(groupinfo)
-        $("#groups").html(groupinfo.Description)
-      } catch{
-        showError('There is a problem retrieving  data, please try again later.<br />' + error);
-      }
-
-      function showError(message) {
-        // Display an error under the main container
-        $('#user')
-          .append("<label>" + message + "</label>");
-      }
-
-      var u = $('#user').val();
-
-      var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
-      // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
-
-      try {
-        const response = await fetch(
-          serviceURL, { method: 'GET' }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          // console.log(data)
-          console.log(data)
+        try {
+          const information = await fetch(
+            "http://localhost:3002/grpouting/" + grpid, { method: 'GET' }
+          );
+          const info = await information.json();
+          groupinfo = info;
+          console.log(groupinfo)
+          $("#groups").html(groupinfo.Description)
+        } catch{
+          showError('There is a problem retrieving  data, please try again later.<br />' + error);
         }
 
-        var invoices = data;
+        function showError(message) {
+          // Display an error under the main container
+          $('#user')
+            .append("<label>" + message + "</label>");
+        }
+
+        var u = $('#user').val();
+
+        var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
+        // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
+
+        try {
+          const response = await fetch(
+            serviceURL, { method: 'GET' }
+          );
+          const data = await response.json();
+          if (response.ok) {
+            // console.log(data)
+            console.log(data)
+          }
+
+          var invoices = data;
 
 
-        for (const invoice of invoices) {
+          for (const invoice of invoices) {
 
+            var status;
+            var settlement;
+            var transactionID;
 
-          try {
-            var serviceURL2 ="http://localhost:3005/settlement/user/123abc/invoice/"+ invoice.InvoiceID 
-            // var serviceURL2 = "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID
+            try {
+              var serviceURL2 ="http://localhost:3005/settlement/user/" + userid + "/invoice/"+ invoice.InvoiceID 
+              // var serviceURL2 = "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID
 
-            const response = await fetch(
-              serviceURL2, { method: 'GET' }
-            );
-            const status = await response.json();
+              const response = await fetch(
+                serviceURL2, { method: 'GET' }
+              );
+              status = await response.json();
 
-            //console.log(status.length)
-            if (status.length == 0) {
-              settlement = "Not Settled";
-            } else {
-              settlement = "Settled"
+              console.log(status)
+              if (status.length == 0) {
+                settlement = "Not Settled";
+              } else {
+                settlement = "Settled"
+              }
+
+            } catch (error) {
+              showError('There is a problem retrieving data, please try again later.<br />' + error);
+            }
+            var url = "invoice_details.html?invoiceID=" + invoice.InvoiceID
+            var url2 = "payment.html?invoiceID=" + invoice.InvoiceID
+            var html = '<div class="card container-fluid " style="width:95%">'
+            html += '<div class="card-body  justify-content-md-center">'
+            html += '<h5 class="card-title">' + invoice.InvoiceID + ' : ' + invoice.Title + '</h5>'
+            html += '<h6 class="card-subtitle mb-2 text-muted">Description: ' + invoice.Description + '</h6>'
+            html += '<p class="card-text">Total Amount: $' + invoice.Amount + '</p>'
+            html += '<p class="card-text">Status: ' + settlement + '</p>'
+            // html += '<a href="' + url + '"class="card-link">Invoice Detail</a>'
+
+            if (status.length != 0) {
+              html += '<p class="card-text">Transation ID: ' + status[0].TransactionID + '</p>'
             }
 
-          } catch (error) {
-            showError('There is a problem retrieving data, please try again later.<br />' + error);
+            html += '<a href="'+url2+'" class="btn btn-lg btn-block btn-primary">Pay</a>'
+            html += ' </div>'
+            html += ' </div>'
+            html += ' </div>';
+            $('#printcard').append(html);
           }
-          var url = "invoice_details.html?invoiceID=" + invoice.InvoiceID
-          var url2 = "payment.html?invoiceID=" + invoice.InvoiceID
-          var html = '<div class="card container-fluid " style="width:95%">'
-          html += '<div class="card-body  justify-content-md-center">'
-          html += '<h5 class="card-title">' + invoice.InvoiceID + ' : ' + invoice.Title + '</h5>'
-          html += '<h6 class="card-subtitle mb-2 text-muted">Description: ' + invoice.Description + '</h6>'
-          html += '<p class="card-text">Total Amount: $' + invoice.Amount + '</p>'
-          html += '<p class="card-text">Status: ' + settlement + '</p>'
-          // html += '<a href="' + url + '"class="card-link">Invoice Detail</a>'
-          html += '<a href="'+url2+'" class="card-link">Pay</a>'
-          html += ' </div>'
-          html += ' </div>'
-          html += ' </div>';
-          $('#printcard').append(html);
-        }
-      } catch (error) {
-        // Errors when calling the service; such as network error, 
-        // service offline, etc
-        showError
-          ('There is a problem retrieving  data, please try again later.<br />' + error);
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          showError
+            ('There is a problem retrieving  data, please try again later.<br />' + error);
 
-      } // error
+        } // error
 
-    });
-
-
+      });
+    }, 750);
+    
   </script>
 </body>
 
