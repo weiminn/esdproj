@@ -63,9 +63,9 @@
     <div class="card-body">
       <form action="grouplisting.html">
         <div class="form-group">
-          <label for="groupname">Group Name</label>
-          <input type="group_name" class="form-control" id="group_name" aria-describedby="groupHelp"
-            placeholder="Enter group name">
+          <label for="group_desc">Group Description</label>
+          <input type="group_desc" class="form-control" id="group_desc" aria-describedby="groupHelp"
+            placeholder="Enter group description">
           <small id="groupHelp" class="form-text text-muted">This will be displayed on your group list</small>
         </div>
         <button type="submit" class="btn btn-primary" id="createGrpOutingButton">Create</button>
@@ -74,21 +74,20 @@
     </div>
   </div>
 
-
-
-
-
   <script>
-     var userid = localStorage.getItem("userid");
+    var userid = localStorage.getItem("userid");
     localStorage.setItem("userid", userid);
+
     async function postData(serviceURL, requestBody) {
-     
+
       var requestParam = {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody)
       }
       try {
+
+        console.log(requestBody)
         const response = await fetch(serviceURL, requestParam);
         data = await response.json();
 
@@ -106,14 +105,14 @@
       // Change serviceURL to your own
 
       var owner = userid
-      //var serviceURL = "http://localhost:3003/UserGrpOuting/create"
-      var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/create";
+      var desc = $("#group_desc").val()
+      var serviceURL = "http://localhost:3003/UserGrpOuting/create"
+      // var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/create";
 
       var requestBody = {
-        CreatedBy: owner
+        CreatedBy: owner,
+        Description: desc
       };
-
-
 
       postData(serviceURL, requestBody);
 

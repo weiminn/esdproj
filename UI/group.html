@@ -70,14 +70,6 @@
 
   </div>
 
-
-
-
-
-
-
-
-
   <script>
     var userid = localStorage.getItem("userid");
     localStorage.setItem("userid", userid);
@@ -87,9 +79,19 @@
     const grpid = urlParams.get('grpOutingID')
     localStorage.setItem("grpOutingID", grpid)
 
-    $("#groups").html("Group " + grpid)
     $(async () => {
 
+      try {
+        const information = await fetch(
+          "http://localhost:3002/grpouting/" + grpid, { method: 'GET' }
+        );
+        const info = await information.json();
+        groupinfo = info;
+        console.log(groupinfo)
+        $("#groups").html(groupinfo.Description)
+      } catch{
+        showError('There is a problem retrieving  data, please try again later.<br />' + error);
+      }
 
       function showError(message) {
         // Display an error under the main container
@@ -99,10 +101,8 @@
 
       var u = $('#user').val();
 
-      //var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
-      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
-
-
+      var serviceURL = "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid;
+      // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid;
 
       try {
         const response = await fetch(
@@ -121,8 +121,8 @@
 
 
           try {
-            // var serviceURL2 ="http://localhost:3005/settlement/user/123abc/invoice/"+ invoice.InvoiceID 
-            var serviceURL2 = "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID
+            var serviceURL2 ="http://localhost:3005/settlement/user/123abc/invoice/"+ invoice.InvoiceID 
+            // var serviceURL2 = "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID
 
             const response = await fetch(
               serviceURL2, { method: 'GET' }
@@ -154,12 +154,6 @@
           html += ' </div>';
           $('#printcard').append(html);
         }
-
-
-
-
-
-
       } catch (error) {
         // Errors when calling the service; such as network error, 
         // service offline, etc

@@ -80,8 +80,8 @@
       }
 
       var u = $('#message').val(); 
-      //var serviceURL = "http://localhost:3003/usergrpouting/user/" + userid
-      var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/user/" + userid;
+      var serviceURL = "http://localhost:3003/usergrpouting/user/" + userid
+      // var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/user/" + userid;
      
 
       try {
@@ -97,14 +97,12 @@
           var groupinfo = null;
           var count = 0;
          
-          //var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
-          var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
-          //var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
-          var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
+          var serviceURL2 = "http://localhost:3002/grpouting/" + group.GrpOutingID;
+          // var serviceURL2 = "http://52.76.30.61:8000/api/v1/grpouting/"+group.GrpOutingID;
+          var serviceURL3 = "http://localhost:3004/invoice/grpouting/" + group.GrpOutingID + "/user/" + userid
+          // var serviceURL3 = "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + group.GrpOutingID //+ "/user/" + userid
           try {
-
             const information = await fetch(
-
               serviceURL2, { method: 'GET' }
             );
             const info = await information.json();
@@ -128,7 +126,7 @@
           var url = "group.html?grpOutingID=" + group.GrpOutingID
           var html = '<div class="card container-fluid " style="width:95%">'
           html += '<div class="card-body  justify-content-md-center">'
-          html += '<h5 class="card-title">' + group.GrpOutingID + ' : ' + groupinfo.CreatedBy + '</h5>'
+          html += '<h5 class="card-title">' + groupinfo.Description + '</h5>'//' + group.GrpOutingID + ' : 
           html += '<h6 class="card-subtitle mb-2 text-muted">Created By: ' + groupinfo.CreatedBy + '</h6>'
           html += '<p class="card-text">Number Of Invoices: ' + count + '</p>'
           html += '<a href="' + url + '"class="card-link">See More</a>'
@@ -137,12 +135,6 @@
           html += ' </div>';
           $('#printcard').append(html);
         }
-
-
-
-
-
-
       } catch (error) {
         // Errors when calling the service; such as network error, 
         // service offline, etc

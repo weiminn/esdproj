@@ -12,13 +12,13 @@ CREATE TABLE User
 );
 
 INSERT INTO User
-VALUES("123abc", "HongRen", "user1.esd@gmail.com", "HongRen123");
+VALUES("HongHong", "HongRen", "user1.esd@gmail.com", "HongRen123");
 INSERT INTO User
-VALUES("456abc", "Hardyanto", "user2.esd@gmail.com", "Hardy123");
+VALUES("Hardy", "Hardyanto", "user2.esd@gmail.com", "Hardy123");
 INSERT INTO User
-VALUES("789abc", "Ram", "wei.minn.2018@sis.smu.edu.sg", "Ram123");
+VALUES("Ramly", "Ram", "wei.minn.2018@sis.smu.edu.sg", "Ram123");
 INSERT INTO User
-VALUES("123ccc", "Amanda", "wei.minn.2018@sis.smu.edu.sg", "Amanda123");
+VALUES("Marcie", "Amanda", "wei.minn.2018@sis.smu.edu.sg", "Amanda123");
 
 DROP DATABASE IF EXISTS GrpOuting;
 CREATE DATABASE GrpOuting;
@@ -35,10 +35,10 @@ create table GrpOuting
 
 	INSERT INTO GrpOuting
 		(CreatedBy, GrpDateTime, Description)
-	VALUES("123abc", "2017-06-15 09:34:21", "Day out with Fwends");
+	VALUES("HongHong", "2017-06-15 09:34:21", "Day out with Fwends");
 	INSERT INTO GrpOuting
 		(CreatedBy, GrpDateTime, Description)
-	VALUES("456abc", "2017-06-15 09:34:21", "Night out with Bros");
+	VALUES("Hardy", "2017-06-15 09:34:21", "Night out with Bros");
 
 	DROP DATABASE IF EXISTS UserGrpOuting;
 	CREATE DATABASE UserGrpOuting;
@@ -53,11 +53,11 @@ create table GrpOuting
 
 
 	INSERT INTO UserGrpOuting
-	VALUES("123abc", "1");
+	VALUES("HongHong", "1");
 	INSERT INTO UserGrpOuting
-	VALUES("456abc", "1");
+	VALUES("Hardy", "1");
 	INSERT INTO UserGrpOuting
-	VALUES("123abc", "2");
+	VALUES("HongHong", "2");
 
 	DROP DATABASE IF EXISTS Invoice;
 	CREATE DATABASE Invoice;
@@ -91,9 +91,9 @@ create table GrpOuting
 		);
 
 		INSERT INTO UserInvoice
-		VALUES("123abc", 1, 1);
+		VALUES("HongHong", 1, 1);
 		INSERT INTO UserInvoice
-		VALUES("456abc", 2, 1);
+		VALUES("Hardy", 2, 1);
 
 		DROP DATABASE IF EXISTS Settlement;
 		CREATE DATABASE Settlement;
@@ -109,4 +109,4 @@ create table GrpOuting
 		);
 
 		INSERT INTO Settlement
-		VALUES("123abc", "1", "T123", "2017-06-16 09:34:21");
+		VALUES("HongHong", "1", "T123", "2017-06-16 09:34:21");
