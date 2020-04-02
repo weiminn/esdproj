@@ -137,7 +137,7 @@
 				var serviceURL = "http://52.76.30.61:8000/api/v1/invoice/" + invoiceid + "/users";
 
 				const users = await fetch(
-					serviceURL1, { method: 'GET' }
+					serviceURL, { method: 'GET' }
 				);
 				const count = await users.json();
 				console.log(count.NumberOfUsers)
