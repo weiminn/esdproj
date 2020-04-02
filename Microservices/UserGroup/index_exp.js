@@ -1,27 +1,24 @@
-const express = require('express');
-var app = express();
+const express = require('express')
+var app = express()
 const bodyparser = require('body-parser')
 const Sequelize = require('sequelize')
 const request = require('request')
-const axios = require('axios')
 const cors = require('cors')
+const axios = require('axios')
  
 app.use(cors())
 
-// parse application/x-www-form-urlencoded
-app.use(bodyparser.urlencoded({ extended: true }))
-
-// parse application/json
+app.use(bodyparser.urlencoded({extended: true}))
 app.use(bodyparser.json())
 
 const sequelize = new Sequelize('UserGrpOuting', 'admin', 'asdf1234', {
     // host: process.env.dbHOST,//'localhost',
     host: "esdb.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
+    // host: "esd.cyp1plpg63lm.ap-southeast-1.rds.amazonaws.com",
     dialect: 'mysql'
 })
 
-// const host = 'host.docker.internal'
-const userHost        = '13.228.102.119'
+const userHost = '13.228.102.119'
 const groupOutingHost = '18.136.144.202'
 const host = 'localhost'
 
@@ -44,8 +41,14 @@ const UserGrpOuting = sequelize.define('UserGrpOuting', {
     }
 );
 
-
 app.post("/UserGrpOuting/create", (req, res) => {
+
+    console.log(req.body)
+    
+    // return res.send({
+    //     message: "You tried to create",
+    //     group: req.body
+    // }) 
 
     console.log("request body:")
     console.log(req.body)
@@ -75,45 +78,23 @@ app.post("/UserGrpOuting/create", (req, res) => {
 app.post("/UserGrpOuting/join", (req, res) => {
     console.log(req.body)
     UserGrpOuting.create(req.body).then(result => {
-        res.json(result)
+        res.json({
+            message: "You successfully added",
+            group: result
+        })
     })
 })
 
-app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
-    
-    const gid = req.params.id
+app.get("/UserGrpOuting/grpouting/:gid", (req, res) => {
+
+    const gid = req.params.gid
 
     UserGrpOuting.findAll({
         where: {
             GrpOutingID: gid
         }
     }).then((groupUsers) => {
-        // console.log(groupUsers)
-
-        var users = [];
-
-        usersProcessed = 0;
-
-        if(groupUsers.length != 0){
-
-            groupUsers.forEach(user => {
-                //request('http://'+userHost+':5100/user/' + user.UserID, { json: true }, (err, response, u) => {
-                request('http://'+host+':3001/user/' + user.UserID, { json: true }, (err, response, u) => {
-                    if (err) { 
-                        return res.send(err); 
-                    }
-                    
-                    users.push(u)
-                    usersProcessed++
-
-                    if(usersProcessed == groupUsers.length) {
-                        return res.send(users)
-                    }
-                });
-            })
-        } else {
-            return res.send("No users found for group id: " + gid)
-        }   
+        return res.send(groupUsers)
     })
 })
 
@@ -126,9 +107,6 @@ app.get("/UserGrpOuting/user/:id", (req, res) => {
             UserID: req.params.id
         }
     }).then((UserGrpOutings) => {
-
-        console.log(UserGrpOutings.length)
-
         var groups = [];
 
         groupsProcessed = 0;
@@ -137,25 +115,24 @@ app.get("/UserGrpOuting/user/:id", (req, res) => {
             UserGrpOutings.forEach(group => {
 
                 // console.log(group.GrpOutingID)
-                //request('http://'+groupOutingHost+':5100/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
+                // request('http://'+groupOutingHost+':5100/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
                 request('http://'+host+':3002/grpouting/' + group.GrpOutingID, { json: true }, (err, response, g) => {
-                    if (err) { 
-                        return res.send(err); 
-                    }
-    
+                
+                
                     groups.push(g)
                     groupsProcessed++
-    
+
                     if(groupsProcessed == UserGrpOutings.length) {
                         return res.send(groups)
                     }
-                });
+                })
+                
             })
         } else {
             return res.send("No Groups found for user id: " + uid)
-        }   
-        
+        } 
+
     })
 })
 
-app.listen(3003, () =>  console.log('Express server is running at port no: 3003'));
+app.listen(3003, () =>  console.log('Express server is running at port no: 3004'));

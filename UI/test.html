@@ -43,20 +43,19 @@
     localStorage.setItem("userid", userid);
 
     async function postData(serviceURL, requestBody) {
-
       var requestParam = {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
+        method: 'POST', body: requestBody
       }
       try {
 
-        console.log(requestBody)
         const response = await fetch(serviceURL, requestParam);
         data = await response.json();
-
+        if (response.ok) {
+          // window.location.href = "group.html?grpOutingID="+grpid;
+          console.log("ok")
+        }
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       }
     }
 
@@ -67,37 +66,83 @@
 
 
       // Change serviceURL to your own
+      event.preventDefault();
 
       var owner = userid
       var desc = $("#group_desc").val()
       // var serviceURL = "http://localhost:3003/UserGrpOuting/create"
-      var serviceURL = "http://52.76.30.61:8000/api/v1/usergrpouting/create";
+      // var serviceURL = "http://52.76.30.61:8000/api/v1/usergrpouting/create";
+      // var serviceURL = "http://localhost:8000/api/v1/usergrpouting/create";
       // var serviceURL = "http://52.77.148.243:5100/usergrpouting/create";
-
-      var requestBody = {
-        CreatedBy: "HongHong",
-        Description: "Automated"
-      };
-
-      postData(serviceURL, requestBody);
       
 
-      // fetch(serviceURL, {
-      //   method: 'POST', // or 'PUT'
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'mode': 'cors',
-      //   },
-      //   body: JSON.stringify(requestBody),
-      // })
-      // .then((response) => response.json())
-      // .then((data) => {
-      //   console.log('Success:', data);
-      // })
-      // .catch((error) => {
-      //   console.error('Error:', error);
-      // });
 
+
+      
+
+      // var requestOptions = {
+      //   method: 'GET',
+      //   redirect: 'follow'
+      // };
+
+      // fetch("http://52.76.30.61:8000/api/v1/UserGrpOuting/user/HongHong", requestOptions)
+      // // fetch("http://localhost:3003/UserGrpOuting/user/HongHong", requestOptions)
+      //   .then(response => response.text())
+      //   .then(result => console.log(result))
+      //   .catch(error => console.log('error', error));
+
+
+
+
+
+      
+      
+
+
+      // var myHeaders = new Headers();
+      // myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      // var urlencoded = new URLSearchParams();
+      // urlencoded.append("UserID", "testtt");
+      // urlencoded.append("GrpOutingID", "1");
+
+      // var requestOptions = {
+      //   method: 'POST',
+      //   headers: myHeaders,
+      //   body: urlencoded,
+      //   redirect: 'follow'
+      // };
+
+      // // fetch("http://52.76.30.61:8000/api/v1/UserGrpOuting/join", requestOptions)
+      // fetch("http://localhost:3003/UserGrpOuting/join", requestOptions)
+      //   .then(response => response.text())
+      //   .then(result => console.log(result))
+      //   .catch(error => console.log('error', error));
+
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("CreatedBy", "HongHong");
+      urlencoded.append("Description", "Dayout");
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+
+      // fetch("http://localhost:3003/UserGrpOuting/create", requestOptions)
+      fetch("http://52.76.30.61:8000/api/v1/UserGrpOuting/create", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+
+
+      
     });
 
   </script>

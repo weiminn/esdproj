@@ -58,7 +58,10 @@ def create_group():#grpOutingID
 	data = request.get_json()
 	print("Data received")
 	print(data)
-	group = Group(createdBy=data['CreatedBy'], description=data['Description'])
+	group = Group(
+		createdBy=data['CreatedBy'], 
+		description=data['Description']
+	)
 
 	try:
 		db.session.add(group)

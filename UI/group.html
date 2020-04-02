@@ -90,8 +90,8 @@
       $(async () => {
 
         const information = await fetch(
-          "http://localhost:3002/grpouting/" + grpid, 
-          // "http://52.76.30.61:8000/api/v1/grpouting/"+grpid,
+          // "http://localhost:3002/grpouting/" + grpid, 
+          "http://52.76.30.61:8000/api/v1/grpouting/"+grpid,
           { method: 'GET' }
         );
         const info = await information.json();
@@ -103,8 +103,8 @@
 
         //get invoices for this user in the group
         const response = await fetch(
-          "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid, 
-          // "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid + "/user/" + userid,
+          // "http://localhost:3004/invoice/grpouting/" + grpid + "/user/" + userid, 
+          "http://52.76.30.61:8000/api/v1/invoice/grpouting/" + grpid + "/user/" + userid,
           { method: 'GET' }
         );
         const data = await response.json();
@@ -121,8 +121,8 @@
 
           //chef if the user owns invoice
           const oResponse = await fetch(
-            "http://localhost:3004/invoice/" + invoice.InvoiceID + "/owner/",
-            // "http://52.76.30.61:8000/api/v1/invoice/" + invoice.InvoiceID + "/owner/",
+            // "http://localhost:3004/invoice/" + invoice.InvoiceID + "/owner/",
+            "http://52.76.30.61:8000/api/v1/invoice/" + invoice.InvoiceID + "/owner/",
             { method: 'GET' }
           );
           const owner = await oResponse.json()
@@ -157,16 +157,16 @@
 
             //get users for the invoice
             const uresponse = await fetch(
-              "http://localhost:3004/invoice/" + invoice.InvoiceID + "/users",
-              // "http://52.76.30.61:8000/api/v1/invoice/" + invoice.InvoiceID + "/users",
+              // "http://localhost:3004/invoice/" + invoice.InvoiceID + "/users",
+              "http://52.76.30.61:8000/api/v1/invoice/" + invoice.InvoiceID + "/users",
               { method: 'GET' }
             );
             invoiceUsers = await uresponse.json();
 
             //get settlements of invoice
             const sresponse = await fetch(
-              "http://localhost:3005/settlement/invoice/"+ invoice.InvoiceID , 
-              // "http://52.76.30.61:8000/api/v15/settlement/invoice/"+ invoice.InvoiceID,
+              // "http://localhost:3005/settlement/invoice/"+ invoice.InvoiceID , 
+              "http://52.76.30.61:8000/api/v1/settlement/invoice/"+ invoice.InvoiceID,
             );
             invoiceSettlements = await sresponse.json();
             
@@ -183,8 +183,8 @@
           }else {
             //check if settled by user
             const response = await fetch(
-              "http://localhost:3005/settlement/user/" + userid + "/invoice/"+ invoice.InvoiceID , 
-              // "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID,
+              // "http://localhost:3005/settlement/user/" + userid + "/invoice/"+ invoice.InvoiceID , 
+              "http://52.76.30.61:8000/api/v1/settlement/user/" + userid + "/invoice/" + invoice.InvoiceID,
               { method: 'GET' }
             );
             status = await response.json();

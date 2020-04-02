@@ -61,7 +61,7 @@
   <div class="card col-sm-6 col-lg-4 mx-auto" style="margin-top:40px">
 
     <div class="card-body">
-      <form action="grouplisting.html">
+      <form>
         <!--  -->
         <div class="form-group">
           <label for="group_desc">Group Description</label>
@@ -79,61 +79,64 @@
     var userid = localStorage.getItem("userid");
     localStorage.setItem("userid", userid);
 
-    async function postData(serviceURL, requestBody) {
+    // async function postData(serviceURL, requestBody) {
 
-      var requestParam = {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
-      }
-      try {
+    //   var requestParam = {
+    //     method: 'POST',
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(requestBody)
+    //   }
+    //   try {
 
-        console.log(requestBody)
-        const response = await fetch(serviceURL, requestParam);
-        data = await response.json();
+    //     console.log(requestBody)
+    //     const response = await fetch(serviceURL, requestParam);
+    //     data = await response.json();
 
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
 
     // anonymous async function 
     // - using await requires the function that calls it to be async
     $("#createGrpOutingButton").click(async (event) => {
 
 
+      event.preventDefault();
 
       // Change serviceURL to your own
 
       var owner = userid
       var desc = $("#group_desc").val()
-      var serviceURL = "http://localhost:3003/UserGrpOuting/create"
-      // var serviceURL = "http://52.76.30.61:8000/api/v1/usergrpouting/create";
+      // var serviceURL = "http://localhost:3003/UserGrpOuting/create"
+      var serviceURL = "http://52.76.30.61:8000/api/v1/usergrpouting/create";
 
-      var requestBody = {
-        CreatedBy: owner,
-        Description: desc
+      // var requestBody = {
+      //   CreatedBy: owner
+      //   // Description: desc
+      // };
+
+      // postData(serviceURL, requestBody);
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("CreatedBy", owner);
+      urlencoded.append("Description", desc);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
       };
 
-      postData(serviceURL, requestBody);
-      
-
-      // fetch(serviceURL, {
-      //   method: 'POST', // or 'PUT'
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'mode': 'cors',
-      //   },
-      //   body: JSON.stringify(requestBody),
-      // })
-      // .then((response) => response.json())
-      // .then((data) => {
-      //   console.log('Success:', data);
-      // })
-      // .catch((error) => {
-      //   console.error('Error:', error);
-      // });
-
+      // fetch("http://localhost:3003/UserGrpOuting/create", requestOptions)
+      fetch("http://52.76.30.61:8000/api/v1/UserGrpOuting/create", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     });
 
   </script>

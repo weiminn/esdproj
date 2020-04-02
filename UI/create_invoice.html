@@ -114,7 +114,8 @@
     var userid = localStorage.getItem("userid");
     $(async () => {
       // Change serviceURL to your own
-      var serviceURL = "http://localhost:3003/usergrpouting/grpouting/" + grpid;
+      var serviceURL = "http://52.76.30.61:8000/api/v1/UserGrpOuting/grpouting/" + grpid;
+      // var serviceURL = "http://localhost:3003/UserGrpOuting/grpouting/" + grpid;
       function showError(message) {
         // Display an error under the main container
         $('#user')
@@ -125,7 +126,7 @@
           serviceURL, { method: 'GET' }
         );
         const members = await response.json();
-        //console.log(members)
+        console.log(members)
         // for loop to setup all table rows with obtained book data
         var rows = "";
         for (const member of members) {
@@ -189,8 +190,8 @@
       var amount = $('#invoice_amount').val();
       var description = $('#invoice_description').val();
 
-      var serviceURL = "http://localhost:3004/invoice"
-      // var serviceURL = "http://52.76.30.61:8000/api/v1/invoice";
+      // var serviceURL = "http://localhost:3004/invoice"
+      var serviceURL = "http://52.76.30.61:8000/api/v1/invoice";
 
       var data = new FormData()
       data.append('File', selectedFile);
