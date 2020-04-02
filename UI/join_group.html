@@ -61,7 +61,7 @@
   <div class="card col-sm-6 col-lg-4 mx-auto" style="margin-top:40px">
 
     <div class="card-body">
-      <form action="grouplisting.html">
+      <form>
         <div class="form-group">
           <label for="groupname">Group Id</label>
           <input type="text" class="form-control" id="group_ID" aria-describedby="groupHelp"
@@ -101,18 +101,44 @@
     // - using await requires the function that calls it to be async
     $("#joinBtn").click(async (event) => {
 
+      event.preventDefault()
+
       // Change serviceURL to your own
 
       var grpoutingid = $('#group_ID').val();
 
-      console.log(userid)
-      // var serviceURL = "http://localhost:3003/usergrpouting/join"
-      var serviceURL = "http://52.76.30.61:8000/api/v1/UserGroupOuting/join";
-      var requestBody = {
-        UserID: userid,
-        GrpOutingID: grpoutingid
+      // console.log(userid)
+      // // var serviceURL = "http://localhost:3003/usergrpouting/join"
+      // var serviceURL = "http://52.76.30.61:8000/api/v1/UserGroupOuting/join";
+      // var requestBody = {
+      //   UserID: userid,
+      //   GrpOutingID: grpoutingid
+      // };
+      // postData(serviceURL, requestBody);
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("UserID", userid);
+      urlencoded.append("GrpOutingID", grpoutingid);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
       };
-      postData(serviceURL, requestBody);
+
+      // fetch("http://localhost:3003/UserGrpOuting/join", requestOptions)
+      fetch("http://52.76.30.61:8000/api/v1/UserGrpOuting/join", requestOptions)
+        .then(response => {
+          response.text()})
+        .then(result => {
+          console.log(result)
+          window.location.href = "grouplisting.html";
+        })
+        .catch(error => console.log('error', error));
 
     });
   </script>
