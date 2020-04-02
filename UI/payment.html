@@ -88,6 +88,7 @@
 		const urlParams = new URLSearchParams(queryString);
 		const invoiceid = urlParams.get('invoiceID')
 		var userid = localStorage.getItem("userid");
+		var grpid = localStorage.getItem("grpOutingID");
 
 		async function postData(serviceURL, requestBody) {
 			var requestParam = {
@@ -174,15 +175,40 @@
 					var serviceURL = "http://52.76.30.61:8000/api/v1/settlement";
 					// var serviceURL1 = "http://localhost:3005/settlement";
 
-					var requestBody = {
-						UserID: userid,
-						InvoiceID: invoiceid,
-						TransactionID: details.id,
-						Amount: pay
+					// var requestBody = {
+					// 	UserID: userid,
+					// 	InvoiceID: invoiceid,
+					// 	TransactionID: details.id,
+					// 	Amount: pay
+					// };
+
+					// postData(serviceURL, requestBody);
+					console.log(details)
+
+					var myHeaders = new Headers();
+					myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+					var urlencoded = new URLSearchParams();
+					urlencoded.append("UserID", userid);
+					urlencoded.append("InvoiceID", invoiceid);
+					urlencoded.append("TransactionID", details.id);
+					urlencoded.append("Amount", pay);
+
+					var requestOptions = {
+						method: 'POST',
+						headers: myHeaders,
+						body: urlencoded,
+						redirect: 'follow'
 					};
 
-					postData(serviceURL1, requestBody);
-					console.log(details)
+					fetch(serviceURL, requestOptions)
+					.then(response => {
+						response.text()})
+					.then(result => {
+						console.log(result)
+						window.location.href = "group.html?grpOutingID=" + grpid;
+					})
+					.catch(error => console.log('error', error));
 
 
 					alert('Transaction completed by ' + details.payer.name.given_name);
