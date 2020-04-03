@@ -46,7 +46,7 @@ def find_by_grpOutingID(grpOutingID):
 
 	if group:
 		return jsonify(group.json())
-	return jsonify({"message": "Group Outing not found."}), 404
+	return jsonify({"message": "Group Outing not found."}), 200
 
 
 @app.route("/grpouting", methods=['POST'])#/<string:grpOutingID>

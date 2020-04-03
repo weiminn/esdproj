@@ -73,10 +73,25 @@ app.post("/UserGrpOuting/create", (req, res) => {
 })
 
 app.post("/UserGrpOuting/join", (req, res) => {
-    console.log(req.body)
-    UserGrpOuting.create(req.body).then(result => {
-        res.json(result)
+    // console.log(req.body)
+    //axios.get('http://'+groupOutingHost+':5100/grpouting', 
+    axios.get('http://'+host+':3002/grpouting/' + req.body.GrpOutingID)
+    .then((response) => {
+        console.log(response.data)
+        if(response.data.GrpOutingID){
+            console.log("Found group!")
+            UserGrpOuting.create(req.body).then(result => {
+                res.json(result)
+            })
+        } else {
+            res.json({
+                message: "No group exists with GrpOutingID: " + req.body.GrpOutingID
+            })
+        }
     })
+    .catch((error) => {
+        console.error(error)
+    })  
 })
 
 app.get("/UserGrpOuting/grpouting/:id", (req, res) => {
